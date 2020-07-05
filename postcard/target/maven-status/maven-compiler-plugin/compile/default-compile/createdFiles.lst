@@ -1,0 +1,12 @@
+com\postcard\dao\BaseDao.class
+com\postcard\configuration\CustomAuthorizationCodeAccessTokenProvider.class
+com\postcard\configuration\Configurations.class
+com\postcard\configuration\WebSecurityConfiguration.class
+com\postcard\model\Error.class
+com\postcard\configuration\DatasourceConfiguration.class
+com\postcard\model\PostcardResponse.class
+com\postcard\configuration\DatabasePropertiesPostProcessor.class
+com\postcard\model\Warning.class
+com\postcard\configuration\DatabasePropertiesPostProcessor$1.class
+com\postcard\controller\PostcardController.class
+com\postcard\PostcardApplication.class
