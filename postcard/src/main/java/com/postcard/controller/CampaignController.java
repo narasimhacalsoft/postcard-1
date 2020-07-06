@@ -47,6 +47,15 @@ public class CampaignController {
 
 	@Value("${createPostcardEndPoint}")
 	String createPostcardEndPoint;
+	
+	@Value("${campaignsEndPoint}")
+	String campaignsEndPoint;
+	
+	@Value("${statisticEndpoint}")
+	String statisticEndpoint;
+	
+	@Value("${postcardBaseURL}")
+	String postcardBaseURL;
 
 	@Autowired
 	OAuth2RestTemplate postCardRestTemplate;
@@ -73,7 +82,7 @@ public class CampaignController {
 	@ApiResponses({ @ApiResponse(code = 200, message = "Campaign Statistic") })
 	public ResponseEntity<?> campaigns() {
 		try {
-			String url = "https://apiint.post.ch/pcc/api/v1/campaigns/0b6eee81-5ea3-475a-975b-0318335eb228/statistic";
+			String url = postcardBaseURL + campaignsEndPoint + campaignKey + statisticEndpoint;
 			HttpHeaders headers = new HttpHeaders();
 			headers.setContentType(MediaType.APPLICATION_JSON);
 			//HttpEntity<String> request = new HttpEntity<String>("{}", headers);

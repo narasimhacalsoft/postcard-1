@@ -47,6 +47,9 @@ public class PostcardController {
 
 	@Value("${scope}")
 	String scope;
+	
+	@Value("${postcardBaseURL}")
+	String postcardBaseURL;
 
 	@Value("${postcardAPI}")
 	String postcardAPI;
@@ -56,6 +59,33 @@ public class PostcardController {
 
 	@Value("${createPostcardEndPoint}")
 	String createPostcardEndPoint;
+	
+	@Value("${stateEndPoint}")
+	String stateEndPoint;
+	
+	@Value("${approvalEndPoint}")
+	String approvalEndPoint;
+	
+	@Value("${senderAddressEndPoint}")
+	String senderAddressEndPoint;
+	
+	@Value("${recipientAddressEndPoint}")
+	String recipientAddressEndPoint;
+	
+	@Value("${frontImageEndPoint}")
+	String frontImageEndPoint;
+	
+	@Value("${senderTextEndPoint}")
+	String senderTextEndPoint;
+	
+	@Value("${brandingTextEndPoint}")
+	String brandingTextEndPoint;
+	
+	@Value("${frontPreviewsEndPoint}")
+	String frontPreviewsEndPoint;
+	
+	@Value("${backPreviewsEndPoint}")
+	String backPreviewsEndPoint;
 
 	@Autowired
 	OAuth2RestTemplate postCardRestTemplate;
@@ -82,7 +112,7 @@ public class PostcardController {
 	@ApiResponses({ @ApiResponse(code = 201, message = "Created Postcard") })
 	public ResponseEntity<?> createPostcard() {
 		try {
-			String url = postcardAPI + createPostcardEndPoint + campaignKey;
+			String url = postcardBaseURL + createPostcardEndPoint + campaignKey;
 			HttpHeaders headers = new HttpHeaders();
 			headers.setContentType(MediaType.APPLICATION_JSON);
 			HttpEntity<String> request = new HttpEntity<String>("{}", headers);
@@ -101,7 +131,7 @@ public class PostcardController {
 	@ApiResponses({ @ApiResponse(code = 200, message = "Card state") })
 	public ResponseEntity<?> state() {
 		try {
-			String url = "https://apiint.post.ch/pcc/api/v1/postcards/77c90152-fc91-4077-9c00-87806f548c67/state";
+			String url = postcardBaseURL + postcardAPI + "6af7e36d-4218-42be-8d70-f1b37a642ece" + stateEndPoint;
 			HttpHeaders headers = new HttpHeaders();
 			headers.setContentType(MediaType.APPLICATION_JSON);
 			//HttpEntity<String> request = new HttpEntity<String>("{}", headers);
@@ -119,7 +149,7 @@ public class PostcardController {
 	@ApiResponses({ @ApiResponse(code = 200, message = "Card approval") })
 	public ResponseEntity<?> approval() {
 		try {
-			String url = "https://apiint.post.ch/pcc/api/v1/postcards/77c90152-fc91-4077-9c00-87806f548c67/approval";
+			String url = postcardBaseURL + postcardAPI + "6af7e36d-4218-42be-8d70-f1b37a642ece" + stateEndPoint;
 			HttpHeaders headers = new HttpHeaders();
 			headers.setContentType(MediaType.APPLICATION_JSON);
 			HttpEntity<String> request = new HttpEntity<String>("{}", headers);
@@ -137,7 +167,7 @@ public class PostcardController {
 	@ApiResponses({ @ApiResponse(code = 200, message = "Update Sender") })
 	public ResponseEntity<?> updateSender() {
 		try {
-			String url = "https://apiint.post.ch/pcc/api/v1/postcards/ae89fe34-39d6-4155-9371-f98c78f179fd/addresses/sender";
+			String url = postcardBaseURL + postcardAPI + "6af7e36d-4218-42be-8d70-f1b37a642ece" + senderAddressEndPoint;
 			HttpHeaders headers = new HttpHeaders();
 			headers.setContentType(MediaType.APPLICATION_JSON);
 			HttpEntity<String> request = new HttpEntity<String>("{}", headers);
@@ -158,7 +188,7 @@ public class PostcardController {
 	@ApiResponses({ @ApiResponse(code = 200, message = "Update Recipient") })
 	public ResponseEntity<?> updateRecipient() {
 		try {
-			String url = "https://apiint.post.ch/pcc/api/v1/postcards/ae89fe34-39d6-4155-9371-f98c78f179fd/addresses/recipient";
+			String url = postcardBaseURL + postcardAPI + "6af7e36d-4218-42be-8d70-f1b37a642ece" + recipientAddressEndPoint;
 			HttpHeaders headers = new HttpHeaders();
 			headers.setContentType(MediaType.APPLICATION_JSON);
 			HttpEntity<String> request = new HttpEntity<String>("{}", headers);
@@ -179,7 +209,7 @@ public class PostcardController {
 	@ApiResponses({ @ApiResponse(code = 200, message = "Update Image") })
 	public ResponseEntity<?> updateImage() {
 		try {
-			String url = "https://apiint.post.ch/pcc/api/v1/postcards/ae89fe34-39d6-4155-9371-f98c78f179fd/image";
+			String url = postcardBaseURL + postcardAPI + "6af7e36d-4218-42be-8d70-f1b37a642ece" + frontImageEndPoint;
 			LinkedMultiValueMap<String, Object> map = new LinkedMultiValueMap<>();
 	        FileSystemResource value = new FileSystemResource(new File("C://mi-pham-223464.jpg")); 
 	        map.add("file", value);
@@ -202,7 +232,7 @@ public class PostcardController {
 	@ApiResponses({ @ApiResponse(code = 200, message = "Update Sendertext") })
 	public ResponseEntity<?> updateSenderText() {
 		try {
-			String url = "https://apiint.post.ch/pcc/api/v1/postcards/ae89fe34-39d6-4155-9371-f98c78f179fd/sendertext?senderText=testing";
+			String url = postcardBaseURL + postcardAPI + "6af7e36d-4218-42be-8d70-f1b37a642ece" + senderTextEndPoint;
 			HttpHeaders headers = new HttpHeaders();
 			headers.setContentType(MediaType.APPLICATION_JSON);
 			HttpEntity<String> request = new HttpEntity<String>("{}", headers);
@@ -222,7 +252,7 @@ public class PostcardController {
 	@ApiResponses({ @ApiResponse(code = 200, message = "Update Sendertext") })
 	public ResponseEntity<?> updateBrandingText() {
 		try {
-			String url = "https://apiint.post.ch/pcc/api/v1/postcards/ae89fe34-39d6-4155-9371-f98c78f179fd/branding/text";
+			String url = postcardBaseURL + postcardAPI + "6af7e36d-4218-42be-8d70-f1b37a642ece" + brandingTextEndPoint;
 			HttpHeaders headers = new HttpHeaders();
 			headers.setContentType(MediaType.APPLICATION_JSON);
 			HttpEntity<String> request = new HttpEntity<String>("{}", headers);
@@ -243,7 +273,7 @@ public class PostcardController {
 	@ApiResponses({ @ApiResponse(code = 200, message = "Preview Front") })
 	public ResponseEntity<?> previewFront() {
 		try {
-			String url = "https://apiint.post.ch/pcc/api/v1/postcards/ae89fe34-39d6-4155-9371-f98c78f179fd/previews/front";
+			String url = postcardBaseURL + postcardAPI + "6af7e36d-4218-42be-8d70-f1b37a642ece" + frontPreviewsEndPoint;
 			HttpHeaders headers = new HttpHeaders();
 			headers.setContentType(MediaType.APPLICATION_JSON);
 			//HttpEntity<String> request = new HttpEntity<String>("{}", headers);
@@ -261,7 +291,7 @@ public class PostcardController {
 	@ApiResponses({ @ApiResponse(code = 200, message = "Preview Back") })
 	public ResponseEntity<?> previewBack() {
 		try {
-			String url = "https://apiint.post.ch/pcc/api/v1/postcards/ae89fe34-39d6-4155-9371-f98c78f179fd/previews/back";
+			String url = postcardBaseURL + postcardAPI + "6af7e36d-4218-42be-8d70-f1b37a642ece" + backPreviewsEndPoint;
 			HttpHeaders headers = new HttpHeaders();
 			headers.setContentType(MediaType.APPLICATION_JSON);
 			//HttpEntity<String> request = new HttpEntity<String>("{}", headers);
