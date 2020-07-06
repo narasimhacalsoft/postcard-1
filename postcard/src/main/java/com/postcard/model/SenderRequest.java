@@ -1,7 +1,6 @@
 package com.postcard.model;
 
 import lombok.Data;
-import lombok.Setter;
 
 @Data
 public class SenderRequest {
@@ -16,8 +15,7 @@ public class SenderRequest {
 	
 	
 	private String houseNr;
-	
-	
+		
 	private String zip;
 	
 	private String city;

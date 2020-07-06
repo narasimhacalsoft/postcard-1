@@ -60,22 +60,6 @@ public class CampaignController {
 	@Autowired
 	OAuth2RestTemplate postCardRestTemplate;
 
-	/*
-	 * @GetMapping(path = "configs")
-	 * 
-	 * @ApiOperation(value =
-	 * "Returns all the configuration related to post card API", tags = {
-	 * "Postcard API" }, response = String.class)
-	 * 
-	 * @ApiResponse(code = 200, message = "Configuraitons") public ResponseEntity<?>
-	 * configurations() { StringBuilder sb = new StringBuilder(NEWLINE);
-	 * sb.append(authURL).append(NEWLINE);
-	 * sb.append(accessTokenURL).append(NEWLINE);
-	 * sb.append(clientID).append(NEWLINE); sb.append(clientSecret).append(NEWLINE);
-	 * sb.append(scope).append(NEWLINE); sb.append(campaignKey); return
-	 * ResponseEntity.ok("First Service : " + sb.toString()); }
-	 */
-
 	@GetMapping(path = "campaigns")
 	@ApiOperation(value = "Gets the actual statistic of the given campaign.", tags = {
 			"Campaign API" }, response = CampaignResponse.class)
@@ -86,7 +70,7 @@ public class CampaignController {
 			HttpHeaders headers = new HttpHeaders();
 			headers.setContentType(MediaType.APPLICATION_JSON);
 			//HttpEntity<String> request = new HttpEntity<String>("{}", headers);
-			ResponseEntity<String> responseEntity = postCardRestTemplate.getForEntity(url, String.class);
+			ResponseEntity<CampaignResponse> responseEntity = postCardRestTemplate.getForEntity(url, CampaignResponse.class);
 			return responseEntity;
 		} catch (Exception e) {
 			System.out.println(e);

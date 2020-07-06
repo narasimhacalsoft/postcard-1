@@ -9,6 +9,7 @@ CREATE TABLE PROPERTIES (
     PRIMARY KEY (id)
 );
 
+
 INSERT INTO `` (`id`,`name`,`value`) VALUES (1,'enable-swagger','Y');
 INSERT INTO `` (`id`,`name`,`value`) VALUES (2,'authURL','https://apiint.post.ch/OAuth/authorization');
 INSERT INTO `` (`id`,`name`,`value`) VALUES (3,'accessTokenURL','https://apiint.post.ch/OAuth/token');
@@ -30,3 +31,5 @@ INSERT INTO `` (`id`,`name`,`value`) VALUES (18,'senderTextEndPoint','/sendertex
 INSERT INTO `` (`id`,`name`,`value`) VALUES (19,'brandingTextEndPoint','/branding/text');
 INSERT INTO `` (`id`,`name`,`value`) VALUES (20,'frontPreviewsEndPoint','/previews/front');
 INSERT INTO `` (`id`,`name`,`value`) VALUES (21,'backPreviewsEndPoint','/previews/back');
+INSERT INTO `` (`id`,`name`,`value`) VALUES (22,'brandingImageEndPoint','/branding/image');
+INSERT INTO `` (`id`,`name`,`value`) VALUES (23,'stampImageEndPoint','/stamp/image');
