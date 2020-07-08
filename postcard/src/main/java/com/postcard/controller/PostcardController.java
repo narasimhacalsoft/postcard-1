@@ -18,10 +18,12 @@ import org.springframework.web.bind.annotation.GetMapping;
 
 import com.postcard.model.BrandinText;
 import com.postcard.model.CampaignResponse;
+import com.postcard.model.Order;
 import com.postcard.model.Postcard;
 import com.postcard.model.PostcardResponse;
 import com.postcard.model.RecipientAddress;
 import com.postcard.model.SenderAddress;
+import com.postcard.service.OrderService;
 import com.postcard.service.PostcardService;
 
 import io.swagger.annotations.Api;
@@ -98,6 +100,9 @@ public class PostcardController {
 	@Autowired
 	PostcardService postcardService;
 	
+	@Autowired
+    OrderService orderService;
+	
 
 	@Autowired
 	OAuth2RestTemplate postCardRestTemplate;
@@ -125,7 +130,7 @@ public class PostcardController {
 	public ResponseEntity<?> createPostcard() {
 		try {
 		    
-		    	String url = postcardBaseURL + createPostcardEndPoint + campaignKey;
+			String url = postcardBaseURL + createPostcardEndPoint + campaignKey;
 			HttpHeaders headers = new HttpHeaders();
 			headers.setContentType(MediaType.APPLICATION_JSON);
 			HttpEntity<String> request = new HttpEntity<String>("{}", headers);
