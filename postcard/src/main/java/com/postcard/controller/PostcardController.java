@@ -15,13 +15,14 @@ import org.springframework.security.oauth2.client.OAuth2RestTemplate;
 import org.springframework.stereotype.Controller;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.client.RestTemplate;
 
-import com.postcard.model.BrandinTextRequest;
+import com.postcard.model.BrandinText;
 import com.postcard.model.CampaignResponse;
+import com.postcard.model.Postcard;
 import com.postcard.model.PostcardResponse;
-import com.postcard.model.RecipientRequest;
-import com.postcard.model.SenderRequest;
+import com.postcard.model.RecipientAddress;
+import com.postcard.model.SenderAddress;
+import com.postcard.service.PostcardService;
 
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -94,7 +95,8 @@ public class PostcardController {
 	@Value("${stampImageEndPoint}")
 	String stampImageEndPoint;
 	
-	
+	@Autowired
+	PostcardService postcardService;
 	
 
 	@Autowired
@@ -122,7 +124,8 @@ public class PostcardController {
 	@ApiResponses({ @ApiResponse(code = 201, message = "Created Postcard") })
 	public ResponseEntity<?> createPostcard() {
 		try {
-			String url = postcardBaseURL + createPostcardEndPoint + campaignKey;
+		    
+		    	String url = postcardBaseURL + createPostcardEndPoint + campaignKey;
 			HttpHeaders headers = new HttpHeaders();
 			headers.setContentType(MediaType.APPLICATION_JSON);
 			HttpEntity<String> request = new HttpEntity<String>("{}", headers);
@@ -181,8 +184,8 @@ public class PostcardController {
 			HttpHeaders headers = new HttpHeaders();
 			headers.setContentType(MediaType.APPLICATION_JSON);
 			//to be removed
-			SenderRequest senderRequest = new SenderRequest("firsname","lastname","mystreet","45","11351","mycity");
-			HttpEntity<SenderRequest> request = new HttpEntity<SenderRequest>(senderRequest, headers);
+			SenderAddress senderRequest = new SenderAddress("firsname","lastname","mystreet","45","11351","mycity");
+			HttpEntity<SenderAddress> request = new HttpEntity<SenderAddress>(senderRequest, headers);
 		    ResponseEntity<String> responseEntity = postCardRestTemplate.exchange(url, HttpMethod.PUT,request,String.class);
 			return responseEntity;
 		} catch (Exception e) {
@@ -202,8 +205,8 @@ public class PostcardController {
 			headers.setContentType(MediaType.APPLICATION_JSON);
 			
 			//to be removed
-			RecipientRequest recipientRequest = new RecipientRequest("firstname","lastname","new company","street","45","11351","new city", "sweden","11351");
-			HttpEntity<RecipientRequest> request = new HttpEntity<RecipientRequest>(recipientRequest, headers);
+			RecipientAddress recipientRequest = new RecipientAddress("firstname","lastname","new company","street","45","11351","new city", "sweden","11351");
+			HttpEntity<RecipientAddress> request = new HttpEntity<RecipientAddress>(recipientRequest, headers);
 			ResponseEntity<String> responseEntity = postCardRestTemplate.exchange(url, HttpMethod.PUT,request, String.class);
 			return responseEntity;
 		} catch (Exception e) {
@@ -264,8 +267,8 @@ public class PostcardController {
 			HttpHeaders headers = new HttpHeaders();
 			headers.setContentType(MediaType.APPLICATION_JSON);
 			//to be removed
-			BrandinTextRequest brandingRequest = new BrandinTextRequest("This is my brand","#FFFFFF","#FFFFFF");
-			HttpEntity<BrandinTextRequest> request = new HttpEntity<BrandinTextRequest>(brandingRequest, headers);
+			BrandinText brandingRequest = new BrandinText("This is my brand","#FFFFFF","#FFFFFF");
+			HttpEntity<BrandinText> request = new HttpEntity<BrandinText>(brandingRequest, headers);
 			ResponseEntity<String> responseEntity = postCardRestTemplate.exchange(url, HttpMethod.PUT,request,String.class);
 			return responseEntity;
 		} catch (Exception e) {
@@ -334,11 +337,11 @@ public class PostcardController {
         
 	}
 	
-	   @GetMapping(path = "stamp/image")
-	    @ApiOperation(value = "Updates the branding QR tag information in the given postcard.", tags = {
-	            "Postcard API" }, response = String.class)
-	    @ApiResponses({ @ApiResponse(code = 200, message = "Update Stamp Image") })
-	    public ResponseEntity<?> updateStampImage() {
+	@GetMapping(path = "stamp/image")
+	@ApiOperation(value = "Updates the branding QR tag information in the given postcard.", tags = {
+	        "Postcard API" }, response = String.class)
+	@ApiResponses({ @ApiResponse(code = 200, message = "Update Stamp Image") })
+	public ResponseEntity<?> updateStampImage() {
 	        try {
 	            String url = postcardBaseURL + postcardAPI + "2fd705a6-282c-42f8-aef9-ea729a2651e8" + stampImageEndPoint;
 	            LinkedMultiValueMap<String, Object> map = new LinkedMultiValueMap<>();

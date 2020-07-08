@@ -37,12 +37,12 @@ CREATE TABLE `postcard.image` (
   PRIMARY KEY (`image_id`)
 ); 
 
-CREATE TABLE `postcard.user` (
-  `user_name` int(11) NOT NULL,
-  `password` varchar(45) DEFAULT NULL,
-  `role` varchar(45) DEFAULT NULL,
-  `gdpr_consent` varchar(45) DEFAULT NULL,
-  PRIMARY KEY (`user_name`)
+CREATE TABLE `user` (
+  `userId` int(11) NOT NULL,
+  `password` varchar(250) NOT NULL,
+  `role` varchar(45) NOT NULL,
+  `userName` varchar(45) NOT NULL,
+  PRIMARY KEY (`userId`)
 ); 
 
 INSERT INTO `postcard.PROPERTIES` (`id`,`name`,`value`) VALUES (1,'enable-swagger','Y');
