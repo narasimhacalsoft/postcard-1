@@ -16,14 +16,14 @@ import org.springframework.stereotype.Controller;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.web.bind.annotation.GetMapping;
 
-import com.postcard.model.BrandinText;
+import com.postcard.model.BrandingText;
 import com.postcard.model.CampaignResponse;
-import com.postcard.model.Order;
+import com.postcard.model.PostcardOrder;
 import com.postcard.model.Postcard;
 import com.postcard.model.PostcardResponse;
 import com.postcard.model.RecipientAddress;
 import com.postcard.model.SenderAddress;
-import com.postcard.service.OrderService;
+import com.postcard.service.PostcardOrderService;
 import com.postcard.service.PostcardService;
 
 import io.swagger.annotations.Api;
@@ -101,7 +101,7 @@ public class PostcardController {
 	PostcardService postcardService;
 	
 	@Autowired
-    OrderService orderService;
+    PostcardOrderService orderService;
 	
 
 	@Autowired
@@ -113,6 +113,7 @@ public class PostcardController {
 			"Postcard API" }, response = String.class)
 	@ApiResponse(code = 200, message = "Configuraitons")
 	public ResponseEntity<?> configurations() {
+	    //log.info("In Configurations");
 		StringBuilder sb = new StringBuilder(NEWLINE);
 		sb.append(authURL).append(NEWLINE);
 		sb.append(accessTokenURL).append(NEWLINE);
@@ -272,8 +273,8 @@ public class PostcardController {
 			HttpHeaders headers = new HttpHeaders();
 			headers.setContentType(MediaType.APPLICATION_JSON);
 			//to be removed
-			BrandinText brandingRequest = new BrandinText("This is my brand","#FFFFFF","#FFFFFF");
-			HttpEntity<BrandinText> request = new HttpEntity<BrandinText>(brandingRequest, headers);
+			BrandingText brandingRequest = new BrandingText("This is my brand","#FFFFFF","#FFFFFF");
+			HttpEntity<BrandingText> request = new HttpEntity<BrandingText>(brandingRequest, headers);
 			ResponseEntity<String> responseEntity = postCardRestTemplate.exchange(url, HttpMethod.PUT,request,String.class);
 			return responseEntity;
 		} catch (Exception e) {

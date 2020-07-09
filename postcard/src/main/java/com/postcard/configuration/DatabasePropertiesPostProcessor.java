@@ -17,6 +17,9 @@ import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.ResultSetExtractor;
 
+import lombok.extern.apachecommons.CommonsLog;
+
+@CommonsLog
 public class DatabasePropertiesPostProcessor implements EnvironmentPostProcessor {
 
 	// Logger
@@ -42,8 +45,7 @@ public class DatabasePropertiesPostProcessor implements EnvironmentPostProcessor
 					});
 			environment.getPropertySources().addFirst(new MapPropertySource(PROPERTY_SOURCE_NAME, props));
 		} catch (Exception e) {
-			e.printStackTrace();
-			// TODO log
+			log.error("Unable to fetch properties", e);
 		}
 	}
 	

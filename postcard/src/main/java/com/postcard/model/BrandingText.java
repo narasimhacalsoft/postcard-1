@@ -3,9 +3,9 @@ package com.postcard.model;
 import lombok.Data;
 
 @Data
-public class BrandinText {
+public class BrandingText {
 	
-	public BrandinText(String text, String blockColor, String textColor) {
+	public BrandingText(String text, String blockColor, String textColor) {
 		super();
 		this.text = text;
 		this.blockColor = blockColor;
