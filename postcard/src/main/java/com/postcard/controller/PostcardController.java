@@ -1,7 +1,11 @@
 package com.postcard.controller;
 
 import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
 
+import org.json.JSONObject;
+import com.google.gson.Gson;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.FileSystemResource;
@@ -15,6 +19,7 @@ import org.springframework.security.oauth2.client.OAuth2RestTemplate;
 import org.springframework.stereotype.Controller;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 
 import com.postcard.model.BrandingText;
 import com.postcard.model.CampaignResponse;
@@ -30,9 +35,14 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
+import lombok.extern.apachecommons.CommonsLog;
+
+import com.postcard.validator.ValidationContext;
+import com.postcard.validator.Validator;
 
 @Controller
 @Api(tags = { "Postcard API" })
+@CommonsLog
 public class PostcardController {
 
 	private static final String NEWLINE = "<br/>";
@@ -107,6 +117,8 @@ public class PostcardController {
 	@Autowired
 	OAuth2RestTemplate postCardRestTemplate;
 	
+	@Autowired
+    ValidationContext recipientValidationContext;
 
 	@GetMapping(path = "configs")
 	@ApiOperation(value = "Returns all the configuration related to post card API", tags = {
@@ -130,7 +142,7 @@ public class PostcardController {
 	@ApiResponses({ @ApiResponse(code = 201, message = "Created Postcard") })
 	public ResponseEntity<?> createPostcard() {
 		try {
-		    
+
 			String url = postcardBaseURL + createPostcardEndPoint + campaignKey;
 			HttpHeaders headers = new HttpHeaders();
 			headers.setContentType(MediaType.APPLICATION_JSON);
@@ -365,6 +377,33 @@ public class PostcardController {
 	            return ResponseEntity.badRequest().body(e.getMessage());
 	        }
 	        
+	    }
+	
+	   @PostMapping(path = "validateRecipients")
+	    public ResponseEntity<?> validate() {
+	        try {
+	            String[] header = "title,firstname,lastname".split(",");
+	            String[] data = "test,Beniton, ".split(",");
+	            JSONObject json = new JSONObject();
+	            List<String> errors = new ArrayList<>();
+	            for(int i=0; i < data.length;i++) {
+	                String field = header[i];
+	                String value = data[i];
+	                json.put(field, value);
+	                List<Validator> validators = recipientValidationContext.getValidators(field);
+	                for(Validator validator : validators) {
+	                    if(!validator.isValid(value)) {
+	                        errors.add(validator.errorMessage());
+	                        break;
+	                    }
+	                }
+	            }
+	            json.put("errors", errors);
+	            return ResponseEntity.ok(new Gson().fromJson(json.toString(), RecipientAddress.class));
+	        } catch (Exception e) {
+	            log.error(e);
+	            return ResponseEntity.badRequest().body(e.getMessage());
+	        }
 	    }
 
 }
