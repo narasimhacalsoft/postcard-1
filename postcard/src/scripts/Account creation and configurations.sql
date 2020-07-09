@@ -93,5 +93,6 @@ INSERT INTO `postcard`.`PROPERTIES` (`id`,`name`,`value`) VALUES (37,'findOnePos
 insert into `postcard`.`user`(`userName`,`password`,`role`)values('alten','$2a$10$ixlPY3AAd4ty1l6E2IsQ9OFZi2ba9ZQE0bP7RFcGIWNhyFrrT3YUi','ROLE_USER');
 insert into `postcard`.`user`(`userName`,`password`,`role`)values('admin','$2a$10$ixlPY3AAd4ty1l6E2IsQ9OFZi2ba9ZQE0bP7RFcGIWNhyFrrT3YUi','ROLE_ADMIN');
 
-
 insert into VALIDATION_CONFIGURATION(`key`,`configuration`)values('recipientAddress','{"title":{"validations":[{"type":"MANDATORY","message":"Title is mandatory"},{"type":"MAX_LENGTH","value":30,"message":"Title maximum length allowed is 30"}]},"lastname":{"validations":[{"type":"MANDATORY","message":"Last name is mandatory"},{"type":"MAX_LENGTH","value":75,"message":"Last name maximum length allowed is 75"}]},"firstname":{"validations":[{"type":"MANDATORY","message":"First name is mandatory"},{"type":"MAX_LENGTH","value":75,"message":"First name maximum length allowed is 75"}]},"company":{"validations":[{"type":"MANDATORY","message":"Company name is mandatory"},{"type":"MAX_LENGTH","value":100,"message":"Company name maximum length allowed is 100"}]}}');
+
+
