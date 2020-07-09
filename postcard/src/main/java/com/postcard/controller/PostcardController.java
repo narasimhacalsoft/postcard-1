@@ -23,11 +23,13 @@ import org.springframework.web.bind.annotation.PostMapping;
 
 import com.postcard.model.BrandingText;
 import com.postcard.model.CampaignResponse;
+import com.postcard.model.Image;
 import com.postcard.model.PostcardOrder;
 import com.postcard.model.Postcard;
 import com.postcard.model.PostcardResponse;
 import com.postcard.model.RecipientAddress;
 import com.postcard.model.SenderAddress;
+import com.postcard.service.ImageService;
 import com.postcard.service.PostcardOrderService;
 import com.postcard.service.PostcardService;
 
@@ -112,6 +114,9 @@ public class PostcardController {
 	
 	@Autowired
     PostcardOrderService orderService;
+	
+	@Autowired
+    ImageService imageService;
 	
 
 	@Autowired
@@ -223,7 +228,7 @@ public class PostcardController {
 			headers.setContentType(MediaType.APPLICATION_JSON);
 			
 			//to be removed
-			RecipientAddress recipientRequest = new RecipientAddress("firstname","lastname","new company","street","45","11351","new city", "sweden","11351");
+			RecipientAddress recipientRequest = new RecipientAddress("title", "firstname","lastname","new company","street","45","11351","new city", "sweden","11351");
 			HttpEntity<RecipientAddress> request = new HttpEntity<RecipientAddress>(recipientRequest, headers);
 			ResponseEntity<String> responseEntity = postCardRestTemplate.exchange(url, HttpMethod.PUT,request, String.class);
 			return responseEntity;

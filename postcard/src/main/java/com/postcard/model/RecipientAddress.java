@@ -25,9 +25,10 @@ public class RecipientAddress implements Serializable{
 	private String poBox;
 	private List<String> errors = new ArrayList<>();
 
-	public RecipientAddress(String lastname, String firstname, String company, String street, String houseNr,
+	public RecipientAddress(String title, String lastname, String firstname, String company, String street, String houseNr,
 			String zip, String city, String country, String poBox) {
 		super();
+		this.title = title;
 		this.lastname = lastname;
 		this.firstname = firstname;
 		this.company = company;
