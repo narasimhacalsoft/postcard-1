@@ -1,11 +1,13 @@
 package com.postcard.controller;
 
+import java.io.BufferedReader;
+import java.io.ByteArrayInputStream;
 import java.io.File;
+import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
 
 import org.json.JSONObject;
-import com.google.gson.Gson;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.FileSystemResource;
@@ -20,25 +22,27 @@ import org.springframework.stereotype.Controller;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.multipart.MultipartFile;
 
+import com.google.gson.Gson;
 import com.postcard.model.BrandingText;
 import com.postcard.model.CampaignResponse;
-import com.postcard.model.PostcardOrder;
-import com.postcard.model.Postcard;
 import com.postcard.model.PostcardResponse;
 import com.postcard.model.RecipientAddress;
+import com.postcard.model.SaveRecipientRequest;
 import com.postcard.model.SenderAddress;
 import com.postcard.service.PostcardOrderService;
 import com.postcard.service.PostcardService;
+import com.postcard.validator.ValidationContext;
+import com.postcard.validator.Validator;
 
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
 import lombok.extern.apachecommons.CommonsLog;
-
-import com.postcard.validator.ValidationContext;
-import com.postcard.validator.Validator;
 
 @Controller
 @Api(tags = { "Postcard API" })
@@ -162,7 +166,7 @@ public class PostcardController {
 	@ApiResponses({ @ApiResponse(code = 200, message = "Card state") })
 	public ResponseEntity<?> state() {
 		try {
-			String url = postcardBaseURL + postcardAPI + "2fd705a6-282c-42f8-aef9-ea729a2651e8" + stateEndPoint;
+			String url = postcardBaseURL + postcardAPI + "d87a8d73-62a7-49d0-851d-dddae4a9c9f5" + stateEndPoint;
 			HttpHeaders headers = new HttpHeaders();
 			headers.setContentType(MediaType.APPLICATION_JSON);
 			//HttpEntity<String> request = new HttpEntity<String>("{}", headers);
@@ -180,7 +184,7 @@ public class PostcardController {
 	@ApiResponses({ @ApiResponse(code = 200, message = "Card approval") })
 	public ResponseEntity<?> approval() {
 		try {
-			String url = postcardBaseURL + postcardAPI + "2fd705a6-282c-42f8-aef9-ea729a2651e8" + stateEndPoint;
+			String url = postcardBaseURL + postcardAPI + "d87a8d73-62a7-49d0-851d-dddae4a9c9f5" + stateEndPoint;
 			HttpHeaders headers = new HttpHeaders();
 			headers.setContentType(MediaType.APPLICATION_JSON);
 			HttpEntity<String> request = new HttpEntity<String>("{}", headers);
@@ -198,7 +202,7 @@ public class PostcardController {
 	@ApiResponses({ @ApiResponse(code = 200, message = "Update Sender") })
 	public ResponseEntity<?> updateSender() {
 		try {
-			String url = postcardBaseURL + postcardAPI + "2fd705a6-282c-42f8-aef9-ea729a2651e8" + senderAddressEndPoint;
+			String url = postcardBaseURL + postcardAPI + "d87a8d73-62a7-49d0-851d-dddae4a9c9f5" + senderAddressEndPoint;
 			HttpHeaders headers = new HttpHeaders();
 			headers.setContentType(MediaType.APPLICATION_JSON);
 			//to be removed
@@ -218,7 +222,7 @@ public class PostcardController {
 	@ApiResponses({ @ApiResponse(code = 200, message = "Update Recipient") })
 	public ResponseEntity<?> updateRecipient() {
 		try {
-			String url = postcardBaseURL + postcardAPI + "2fd705a6-282c-42f8-aef9-ea729a2651e8" + recipientAddressEndPoint;
+			String url = postcardBaseURL + postcardAPI + "d87a8d73-62a7-49d0-851d-dddae4a9c9f5" + recipientAddressEndPoint;
 			HttpHeaders headers = new HttpHeaders();
 			headers.setContentType(MediaType.APPLICATION_JSON);
 			
@@ -239,9 +243,9 @@ public class PostcardController {
 	@ApiResponses({ @ApiResponse(code = 200, message = "Update Image") })
 	public ResponseEntity<?> updateImage() {
 		try {
-			String url = postcardBaseURL + postcardAPI + "2fd705a6-282c-42f8-aef9-ea729a2651e8" + frontImageEndPoint;
+			String url = postcardBaseURL + postcardAPI + "d87a8d73-62a7-49d0-851d-dddae4a9c9f5" + frontImageEndPoint;
 			LinkedMultiValueMap<String, Object> map = new LinkedMultiValueMap<>();
-	        FileSystemResource value = new FileSystemResource(new File("C://mi-pham-223464.jpg")); 
+	        FileSystemResource value = new FileSystemResource(new File("C://Users//Narasimhulu//Desktop//mi-pham-223464.jpg")); 
 	        map.add("image", value);
 	        HttpHeaders headers = new HttpHeaders();
 	        headers.setContentType(MediaType.MULTIPART_FORM_DATA);
@@ -262,7 +266,7 @@ public class PostcardController {
 	@ApiResponses({ @ApiResponse(code = 200, message = "Update Sendertext") })
 	public ResponseEntity<?> updateSenderText() {
 		try {
-			String url = postcardBaseURL + postcardAPI + "2fd705a6-282c-42f8-aef9-ea729a2651e8" + senderTextEndPoint + "Testing";
+			String url = postcardBaseURL + postcardAPI + "d87a8d73-62a7-49d0-851d-dddae4a9c9f5" + senderTextEndPoint + "Testing";
 			HttpHeaders headers = new HttpHeaders();
 			headers.setContentType(MediaType.APPLICATION_JSON);
 		    //To be done
@@ -281,7 +285,7 @@ public class PostcardController {
 	@ApiResponses({ @ApiResponse(code = 200, message = "Update Sendertext") })
 	public ResponseEntity<?> updateBrandingText() {
 		try {
-			String url = postcardBaseURL + postcardAPI + "2fd705a6-282c-42f8-aef9-ea729a2651e8" + brandingTextEndPoint;
+			String url = postcardBaseURL + postcardAPI + "d87a8d73-62a7-49d0-851d-dddae4a9c9f5" + brandingTextEndPoint;
 			HttpHeaders headers = new HttpHeaders();
 			headers.setContentType(MediaType.APPLICATION_JSON);
 			//to be removed
@@ -301,7 +305,7 @@ public class PostcardController {
 	@ApiResponses({ @ApiResponse(code = 200, message = "Preview Front") })
 	public ResponseEntity<?> previewFront() {
 		try {
-			String url = postcardBaseURL + postcardAPI + "2fd705a6-282c-42f8-aef9-ea729a2651e8" + frontPreviewsEndPoint;
+			String url = postcardBaseURL + postcardAPI + "d87a8d73-62a7-49d0-851d-dddae4a9c9f5" + frontPreviewsEndPoint;
 			HttpHeaders headers = new HttpHeaders();
 			headers.setContentType(MediaType.APPLICATION_JSON);
 			//HttpEntity<String> request = new HttpEntity<String>("{}", headers);
@@ -319,7 +323,7 @@ public class PostcardController {
 	@ApiResponses({ @ApiResponse(code = 200, message = "Preview Back") })
 	public ResponseEntity<?> previewBack() {
 		try {
-			String url = postcardBaseURL + postcardAPI + "2fd705a6-282c-42f8-aef9-ea729a2651e8" + backPreviewsEndPoint;
+			String url = postcardBaseURL + postcardAPI + "d87a8d73-62a7-49d0-851d-dddae4a9c9f5" + backPreviewsEndPoint;
 			HttpHeaders headers = new HttpHeaders();
 			headers.setContentType(MediaType.APPLICATION_JSON);
 			//HttpEntity<String> request = new HttpEntity<String>("{}", headers);
@@ -337,9 +341,9 @@ public class PostcardController {
     @ApiResponses({ @ApiResponse(code = 200, message = "Update Branding Image") })
     public ResponseEntity<?> updateBrandingImage() {
         try {
-            String url = postcardBaseURL + postcardAPI + "2fd705a6-282c-42f8-aef9-ea729a2651e8" + brandingImageEndPoint;
+            String url = postcardBaseURL + postcardAPI + "d87a8d73-62a7-49d0-851d-dddae4a9c9f5" + brandingImageEndPoint;
             LinkedMultiValueMap<String, Object> map = new LinkedMultiValueMap<>();
-            FileSystemResource value = new FileSystemResource(new File("C://mi-pham-223464.jpg")); 
+            FileSystemResource value = new FileSystemResource(new File("C://Users//Narasimhulu//Desktop//mi-pham-223464.jpg")); 
             map.add("image", value);
             HttpHeaders headers = new HttpHeaders();
             headers.setContentType(MediaType.MULTIPART_FORM_DATA);
@@ -361,9 +365,9 @@ public class PostcardController {
 	@ApiResponses({ @ApiResponse(code = 200, message = "Update Stamp Image") })
 	public ResponseEntity<?> updateStampImage() {
 	        try {
-	            String url = postcardBaseURL + postcardAPI + "2fd705a6-282c-42f8-aef9-ea729a2651e8" + stampImageEndPoint;
+	            String url = postcardBaseURL + postcardAPI + "d87a8d73-62a7-49d0-851d-dddae4a9c9f5" + stampImageEndPoint;
 	            LinkedMultiValueMap<String, Object> map = new LinkedMultiValueMap<>();
-	            FileSystemResource value = new FileSystemResource(new File("C://mi-pham-223464.jpg")); 
+	            FileSystemResource value = new FileSystemResource(new File("C://Users//Narasimhulu//Desktop//mi-pham-223464.jpg")); 
 	            map.add("image", value);
 	            HttpHeaders headers = new HttpHeaders();
 	            headers.setContentType(MediaType.MULTIPART_FORM_DATA);
@@ -378,32 +382,58 @@ public class PostcardController {
 	        }
 	        
 	    }
-	
-	   @PostMapping(path = "validateRecipients")
-	    public ResponseEntity<?> validate() {
-	        try {
-	            String[] header = "title,firstname,lastname".split(",");
-	            String[] data = "test,Beniton, ".split(",");
-	            JSONObject json = new JSONObject();
-	            List<String> errors = new ArrayList<>();
-	            for(int i=0; i < data.length;i++) {
-	                String field = header[i];
-	                String value = data[i];
-	                json.put(field, value);
-	                List<Validator> validators = recipientValidationContext.getValidators(field);
-	                for(Validator validator : validators) {
-	                    if(!validator.isValid(value)) {
-	                        errors.add(validator.errorMessage());
-	                        break;
-	                    }
-	                }
-	            }
-	            json.put("errors", errors);
-	            return ResponseEntity.ok(new Gson().fromJson(json.toString(), RecipientAddress.class));
-	        } catch (Exception e) {
-	            log.error(e);
-	            return ResponseEntity.badRequest().body(e.getMessage());
-	        }
-	    }
+	@PostMapping(path = "validateRecipients", produces = MediaType.APPLICATION_JSON_VALUE)
+	public ResponseEntity<?> validate(@RequestParam("file") MultipartFile file) {
+		try {
+			List<RecipientAddress> listAddress=new ArrayList<>();
+			JSONObject json = null;
+			final String delimiter = ",";
+			BufferedReader br = new BufferedReader(new InputStreamReader(new ByteArrayInputStream(file.getBytes()), "UTF-8"));
+			String line = "";
+			String[] header = null;
+			String[] data = null;
+			int iteration = 0;
+			while ((line = br.readLine()) != null) {
+				if (iteration == 0) {
+					iteration++;
+					header = line.split(delimiter);
+					continue;
+				}
 
+				data = line.split(delimiter);
+				json = new JSONObject();
+				List<String> errors = new ArrayList<>();
+				for (int i = 0; i < data.length; i++) {
+					String field = header[i];
+					String value = data[i];
+					json.put(field, data[i]);
+					List<Validator> validators = recipientValidationContext.getValidators(field);
+					for (Validator validator : validators) {
+						if (!validator.isValid(value)) {
+							errors.add(validator.errorMessage());
+							break;
+						}
+					}
+
+					json.put("errors", errors);
+					
+				}
+				listAddress.add(new Gson().fromJson(json.toString(), RecipientAddress.class));
+			}
+			return ResponseEntity.ok(listAddress);
+		} catch (Exception e) {
+			log.error(e);
+			return ResponseEntity.badRequest().body(e.getMessage());
+		}
+	}
+
+	@PostMapping(path = "saveRecipients")
+	public ResponseEntity<?> saveRecipients(@RequestBody SaveRecipientRequest request) {
+		try {
+			return ResponseEntity.ok(postcardService.saveRecipientAddress(request));
+		} catch (Exception e) {
+			return ResponseEntity.badRequest().body(e.getMessage());
+		}
+
+	}
 }
