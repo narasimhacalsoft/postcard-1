@@ -379,31 +379,54 @@ public class PostcardController {
 	        
 	    }
 	
-	   @PostMapping(path = "validateRecipients")
-	    public ResponseEntity<?> validate() {
-	        try {
-	            String[] header = "title,firstname,lastname".split(",");
-	            String[] data = "test,Beniton, ".split(",");
-	            JSONObject json = new JSONObject();
-	            List<String> errors = new ArrayList<>();
-	            for(int i=0; i < data.length;i++) {
-	                String field = header[i];
-	                String value = data[i];
-	                json.put(field, value);
-	                List<Validator> validators = recipientValidationContext.getValidators(field);
-	                for(Validator validator : validators) {
-	                    if(!validator.isValid(value)) {
-	                        errors.add(validator.errorMessage());
-	                        break;
-	                    }
-	                }
-	            }
-	            json.put("errors", errors);
-	            return ResponseEntity.ok(new Gson().fromJson(json.toString(), RecipientAddress.class));
-	        } catch (Exception e) {
-	            log.error(e);
-	            return ResponseEntity.badRequest().body(e.getMessage());
-	        }
-	    }
+	  @PostMapping(path = "validateRecipients")
+	public ResponseEntity<?> validate() {
+		try {
+			List<RecipientAddress> listAddress=new ArrayList<>();
+			JSONObject json = null;
+			final String delimiter = ",";
+			File file = new File("C://Users//Narasimhulu//Desktop//ReceipientAddress.csv");
+			FileReader fr = new FileReader(file);
+			@SuppressWarnings("resource")
+			BufferedReader br = new BufferedReader(fr);
+			String line = "";
+			String[] header = null;
+			String[] data = null;
+			int iteration = 0;
+			while ((line = br.readLine()) != null) {
+				if (iteration == 0) {
+					iteration++;
+					header = line.split(delimiter);
+					continue;
+				}
+
+				data = line.split(delimiter);
+				json = new JSONObject();
+				List<String> errors = new ArrayList<>();
+				for (int i = 0; i < data.length; i++) {
+					String field = header[i];
+					String value = data[i];
+					json.put(field, data[i]);
+					List<Validator> validators = recipientValidationContext.getValidators(field);
+					for (Validator validator : validators) {
+						if (!validator.isValid(value)) {
+							errors.add(validator.errorMessage());
+							break;
+						}
+					}
+
+					json.put("errors", errors);
+					
+				}
+				listAddress.add(new Gson().fromJson(json.toString(), RecipientAddress.class));
+			}
+			return ResponseEntity.ok(listAddress);
+		} catch (Exception e) {
+			log.error(e);
+			return ResponseEntity.badRequest().body(e.getMessage());
+		}
+	}
+
+	
 
 }
