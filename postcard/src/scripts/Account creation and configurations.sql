@@ -2,54 +2,57 @@ drop user if exists postcard;
 CREATE USER 'postcard'@'%' IDENTIFIED BY 'Alten@123';
 GRANT ALL PRIVILEGES ON *.* TO 'postcard'@'%' ;
 
-CREATE TABLE postcard.PROPERTIES (
-    id INT(11) NOT NULL AUTO_INCREMENT,
-    name VARCHAR(100),
-    value VARCHAR(300),
-    PRIMARY KEY (id)
+CREATE TABLE `postcard`.`PROPERTIES` (
+    `id` INT(11) NOT NULL AUTO_INCREMENT,
+    `name` VARCHAR(100),
+    `value` VARCHAR(300),
+    PRIMARY KEY (`id`)
 );
 
-CREATE TABLE 'postcard'.`postcard` (
+CREATE TABLE `postcard`.`postcard` (
   `orderId` int(11) DEFAULT NULL,
   `cardId` int(11) NOT NULL AUTO_INCREMENT,
   `cardKey` varchar(45) DEFAULT NULL,
   `attempts` int(11) DEFAULT NULL,
-  `recipientJson` varchar(45) DEFAULT NULL,
+  `recipientJson` text DEFAULT NULL,
   `submissionStatus` varchar(45) DEFAULT NULL,
   `response` varchar(45) DEFAULT NULL,
   `cardStatus` varchar(45) DEFAULT NULL,
-  PRIMARY KEY (`cardId`)
+  PRIMARY KEY (`cardId`),
+CONSTRAINT order_idfk_1 FOREIGN KEY (`orderId`) REFERENCES `postcard`.`postcardorder` (`orderId`));
 );
 
-CREATE TABLE 'postcard'.`postcardorder` (
+CREATE TABLE `postcard`.`postcardorder` (
   `orderId` int(11) NOT NULL AUTO_INCREMENT,
-  `senderJson` varchar(1000) DEFAULT NULL,
+   `imageId` int(11) NOT NULL,
+  `senderJson` text DEFAULT NULL,
   `senderText` varchar(500) DEFAULT NULL,
   `brandingText` varchar(500) DEFAULT NULL,
-  `brandingJson` varchar(1000) DEFAULT NULL,
-  PRIMARY KEY (`orderId`)
+  `brandingJson` text DEFAULT NULL,
+  PRIMARY KEY (`orderId`),
+CONSTRAINT image_idfk_1 FOREIGN KEY (`imageId`) REFERENCES `postcard`.`image` (`imageId`));	
 );
 
-CREATE TABLE `postcard.image` (
-  `image_id` int(11) NOT NULL,
+CREATE TABLE `postcard`.`image` (
+  `imageId` int(11) NOT NULL AUTO_INCREMENT,
   `image` longblob DEFAULT NULL,
-  `image_type` varchar(45) DEFAULT NULL,
+  `imageType` varchar(45) DEFAULT NULL,
   PRIMARY KEY (`image_id`)
 ); 
 
-CREATE TABLE 'postcard'.`user` (
-  `userId` int(11) NOT NULL,
+CREATE TABLE `postcard`.`user` (
+  `userId` int(11) NOT NULL AUTO_INCREMENT,
   `password` varchar(250) NOT NULL,
   `role` varchar(45) NOT NULL,
   `userName` varchar(45) NOT NULL,
   PRIMARY KEY (`userId`)
 );
 
-CREATE TABLE VALIDATION_CONFIGURATION (
-	id int(11) not null  auto_increment ,
+CREATE TABLE `postcard`.`VALIDATION_CONFIGURATION` (
+    `id` int(11) not null  AUTO_INCREMENT ,
     `key` varchar(50) not null,
     `configuration` text not null,
-    primary key (id)
+    primary key (`id`)
 );
 
 INSERT INTO `postcard`.`PROPERTIES` (`id`,`name`,`value`) VALUES (1,'enable-swagger','Y');
@@ -93,5 +96,12 @@ INSERT INTO `postcard`.`PROPERTIES` (`id`,`name`,`value`) VALUES (37,'findOnePos
 insert into `postcard`.`user`(`userName`,`password`,`role`)values('alten','$2a$10$ixlPY3AAd4ty1l6E2IsQ9OFZi2ba9ZQE0bP7RFcGIWNhyFrrT3YUi','ROLE_USER');
 insert into `postcard`.`user`(`userName`,`password`,`role`)values('admin','$2a$10$ixlPY3AAd4ty1l6E2IsQ9OFZi2ba9ZQE0bP7RFcGIWNhyFrrT3YUi','ROLE_ADMIN');
 
+insert into `postcard`.`VALIDATION_CONFIGURATION`(`key`,`configuration`)values('recipientAddress','{"title":{"validations":[{"type":"MANDATORY","message":"Title is mandatory"},{"type":"MAX_LENGTH","value":30,"message":"Title maximum length allowed is 30"}]},"lastname":{"validations":[{"type":"MANDATORY","message":"Last name is mandatory"},{"type":"MAX_LENGTH","value":75,"message":"Last name maximum length allowed is 75"}]},"firstname":{"validations":[{"type":"MANDATORY","message":"First name is mandatory"},{"type":"MAX_LENGTH","value":75,"message":"First name maximum length allowed is 75"}]},"company":{"validations":[{"type":"MANDATORY","message":"Company name is mandatory"},{"type":"MAX_LENGTH","value":100,"message":"Company name maximum length allowed is 100"}]},
+"street":{"validations":[{"type":"NOT MANDATORY","message":"street is not mandatory"},{"type":"MAX_LENGTH","value":60,"message":"Street maximum length allowed is 60"}]},
+"houseNr":{"validations":[{"type":"NOT MANDATORY","message":"houseNr is not mandatory"},{"type":"MAX_LENGTH","value":10,"message":"houseNr maximum length allowed is 10"}]},
+"zip":{"validations":[{"type":"NOT MANDATORY","message":"zip is not mandatory"},{"type":"MAX_LENGTH","value":6,"message":"zip maximum length allowed is 6"}]},
+"city":{"validations":[{"type":"NOT MANDATORY","message":"city is not mandatory"},{"type":"MAX_LENGTH","value":39,"message":"city maximum length allowed is 39"}]},
+"country":{"validations":[{"type":"NOT MANDATORY","message":"country is not mandatory"},{"type":"MAX_LENGTH","value":60,"message":"country maximum length allowed is 60"}]},
+"poBox":{"validations":[{"type":"NOT MANDATORY","message":"poBox is not mandatory"},{"type":"MAX_LENGTH","value":26,"message":"poBox maximum length allowed is 25"}]}}');
 
-insert into VALIDATION_CONFIGURATION(`key`,`configuration`)values('recipientAddress','{"title":{"validations":[{"type":"MANDATORY","message":"Title is mandatory"},{"type":"MAX_LENGTH","value":30,"message":"Title maximum length allowed is 30"}]},"lastname":{"validations":[{"type":"MANDATORY","message":"Last name is mandatory"},{"type":"MAX_LENGTH","value":75,"message":"Last name maximum length allowed is 75"}]},"firstname":{"validations":[{"type":"MANDATORY","message":"First name is mandatory"},{"type":"MAX_LENGTH","value":75,"message":"First name maximum length allowed is 75"}]},"company":{"validations":[{"type":"MANDATORY","message":"Company name is mandatory"},{"type":"MAX_LENGTH","value":100,"message":"Company name maximum length allowed is 100"}]}}');
+
