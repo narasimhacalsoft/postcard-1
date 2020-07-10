@@ -9,18 +9,12 @@ CREATE TABLE `postcard`.`PROPERTIES` (
     PRIMARY KEY (`id`)
 );
 
-CREATE TABLE `postcard`.`postcard` (
-  `orderId` int(11) DEFAULT NULL,
-  `cardId` int(11) NOT NULL AUTO_INCREMENT,
-  `cardKey` varchar(45) DEFAULT NULL,
-  `attempts` int(11) DEFAULT NULL,
-  `recipientJson` text DEFAULT NULL,
-  `submissionStatus` varchar(45) DEFAULT NULL,
-  `response` varchar(45) DEFAULT NULL,
-  `cardStatus` varchar(45) DEFAULT NULL,
-  PRIMARY KEY (`cardId`),
-CONSTRAINT order_idfk_1 FOREIGN KEY (`orderId`) REFERENCES `postcard`.`postcardorder` (`orderId`));
-
+CREATE TABLE `postcard`.`image` (
+  `imageId` int(11) NOT NULL AUTO_INCREMENT,
+  `image` longblob DEFAULT NULL,
+  `imageType` varchar(45) DEFAULT NULL,
+  PRIMARY KEY (`imageId`)
+); 
 
 CREATE TABLE `postcard`.`postcardorder` (
   `orderId` int(11) NOT NULL AUTO_INCREMENT,
@@ -33,12 +27,18 @@ CREATE TABLE `postcard`.`postcardorder` (
 CONSTRAINT image_idfk_1 FOREIGN KEY (`imageId`) REFERENCES `postcard`.`image` (`imageId`));	
 
 
-CREATE TABLE `postcard`.`image` (
-  `imageId` int(11) NOT NULL AUTO_INCREMENT,
-  `image` longblob DEFAULT NULL,
-  `imageType` varchar(45) DEFAULT NULL,
-  PRIMARY KEY (`imageId`)
-); 
+CREATE TABLE `postcard`.`postcard` (
+  `orderId` int(11) DEFAULT NULL,
+  `cardId` int(11) NOT NULL AUTO_INCREMENT,
+  `cardKey` varchar(45) DEFAULT NULL,
+  `attempts` int(11) DEFAULT NULL,
+  `recipientJson` text DEFAULT NULL,
+  `submissionStatus` varchar(45) DEFAULT NULL,
+  `response` varchar(45) DEFAULT NULL,
+  `cardStatus` varchar(45) DEFAULT NULL,
+  PRIMARY KEY (`cardId`),
+CONSTRAINT order_idfk_1 FOREIGN KEY (`orderId`) REFERENCES `postcard`.`postcardorder` (`orderId`));
+
 
 CREATE TABLE `postcard`.`user` (
   `userId` int(11) NOT NULL AUTO_INCREMENT,
@@ -99,6 +99,11 @@ INSERT INTO `postcard`.`PROPERTIES` (`id`,`name`,`value`) VALUES (41,'deletePost
 INSERT INTO `postcard`.`PROPERTIES` (`id`,`name`,`value`) VALUES (42,'createPostcardForRecipientAddressQuery','insert into postcard(orderId,recipientJson,submissionStatus) values (?,?,?)');
 INSERT INTO `postcard`.`PROPERTIES` (`id`,`name`,`value`) VALUES (43,'updateSenderAddressInfo','update postcardorder set senderJson=?,senderText=? where orderId=?');
 INSERT INTO `postcard`.`PROPERTIES` (`id`,`name`,`value`) VALUES (44,'updateBrandInfo','update postcardorder set brandingJson=?,brandingText=? where orderId=?');
+INSERT INTO `postcard`.`PROPERTIES` (`id`,`name`,`value`) VALUES (45,'management.endpoints.web.exposure.include','*');
+INSERT INTO `postcard`.`PROPERTIES` (`id`,`name`,`value`) VALUES (46,'management.endpoint.health','true');
+INSERT INTO `postcard`.`PROPERTIES` (`id`,`name`,`value`) VALUES (47,'management.endpoint.info','true');
+INSERT INTO `postcard`.`PROPERTIES` (`id`,`name`,`value`) VALUES (48,'management.endpoint.restart.enabled','true');
+
 
 insert into `postcard`.`user`(`userName`,`password`,`role`)values('alten','$2a$10$ixlPY3AAd4ty1l6E2IsQ9OFZi2ba9ZQE0bP7RFcGIWNhyFrrT3YUi','ROLE_USER');
 insert into `postcard`.`user`(`userName`,`password`,`role`)values('admin','$2a$10$ixlPY3AAd4ty1l6E2IsQ9OFZi2ba9ZQE0bP7RFcGIWNhyFrrT3YUi','ROLE_ADMIN');
