@@ -95,6 +95,9 @@ INSERT INTO `postcard`.`PROPERTIES` (`name`,`value`) VALUES ('findOnePostcardQue
 
 INSERT INTO `postcard`.`PROPERTIES` (`name`,`value`) VALUES ('createPostcardForRecipientAddressQuery','insert into postcard(orderId,recipientJson,submissionStatus) values (?,?,?)');
 
+INSERT INTO `postcard`.`PROPERTIES` (`name`,`value`) VALUES ('updateSenderAddressInfo','update postcardorder set senderJson=?,senderText=? where orderId=?');
+
+INSERT INTO `postcard`.`PROPERTIES` (`name`,`value`) VALUES ('updateBrandInfo','update postcardorder set brandingJson=?,brandingText=? where orderId=?');
 insert into `postcard`.`user`(`userName`,`password`,`role`)values('alten','$2a$10$ixlPY3AAd4ty1l6E2IsQ9OFZi2ba9ZQE0bP7RFcGIWNhyFrrT3YUi','ROLE_USER');
 insert into `postcard`.`user`(`userName`,`password`,`role`)values('admin','$2a$10$ixlPY3AAd4ty1l6E2IsQ9OFZi2ba9ZQE0bP7RFcGIWNhyFrrT3YUi','ROLE_ADMIN');
 
