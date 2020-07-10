@@ -14,5 +14,10 @@ public class BrandingText {
 	private String text;
 	private String blockColor;
 	private String textColor;
+	
+	public BrandingText() {
+		super();
+		// TODO Auto-generated constructor stub
+	}
 
 }
