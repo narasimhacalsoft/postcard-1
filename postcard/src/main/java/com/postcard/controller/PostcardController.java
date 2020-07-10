@@ -1,11 +1,13 @@
 package com.postcard.controller;
 
+import java.io.BufferedReader;
+import java.io.ByteArrayInputStream;
 import java.io.File;
+import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
 
 import org.json.JSONObject;
-import com.google.gson.Gson;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.FileSystemResource;
@@ -20,28 +22,31 @@ import org.springframework.stereotype.Controller;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.multipart.MultipartFile;
 
+import com.google.gson.Gson;
 import com.postcard.model.BrandingText;
 import com.postcard.model.CampaignResponse;
-import com.postcard.model.Image;
-import com.postcard.model.PostcardOrder;
-import com.postcard.model.Postcard;
 import com.postcard.model.PostcardResponse;
 import com.postcard.model.RecipientAddress;
 import com.postcard.model.RecipientAddressRequest;
+import com.postcard.model.SaveRecipientRequest;
 import com.postcard.model.SenderAddress;
+import com.postcard.model.UpdateBrandRequest;
+import com.postcard.model.UpdateSenderRequest;
 import com.postcard.service.ImageService;
 import com.postcard.service.PostcardOrderService;
 import com.postcard.service.PostcardService;
+import com.postcard.validator.ValidationContext;
+import com.postcard.validator.Validator;
 
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
 import lombok.extern.apachecommons.CommonsLog;
-
-import com.postcard.validator.ValidationContext;
-import com.postcard.validator.Validator;
 
 @Controller
 @Api(tags = { "Postcard API" })
@@ -384,32 +389,79 @@ public class PostcardController {
         }
         
 	}
-	
-   @PostMapping(path = "validateRecipients")
-	    public ResponseEntity<?> validate() {
-	        try {
-	            String[] header = "title,firstname,lastname".split(",");
-	            String[] data = "test,Beniton, ".split(",");
-	            JSONObject json = new JSONObject();
-	            List<String> errors = new ArrayList<>();
-	            for(int i=0; i < data.length;i++) {
-	                String field = header[i];
-	                String value = data[i];
-	                json.put(field, value);
-	                List<Validator> validators = recipientValidationContext.getValidators(field);
-	                for(Validator validator : validators) {
-	                    if(!validator.isValid(value)) {
-	                        errors.add(validator.errorMessage());
-	                        break;
-	                    }
-	                }
-	            }
-	            json.put("errors", errors);
-	            return ResponseEntity.ok(new Gson().fromJson(json.toString(), RecipientAddress.class));
-	        } catch (Exception e) {
-	            log.error(e);
-	            return ResponseEntity.badRequest().body(e.getMessage());
-	        }
-	    }
+	@PostMapping(path = "validateRecipients", produces = MediaType.APPLICATION_JSON_VALUE)
+	public ResponseEntity<?> validate(@RequestParam("file") MultipartFile file) {
+		try {
+			List<RecipientAddress> listAddress=new ArrayList<>();
+			JSONObject json = null;
+			final String delimiter = ",";
+			BufferedReader br = new BufferedReader(new InputStreamReader(new ByteArrayInputStream(file.getBytes()), "UTF-8"));
+			String line = "";
+			String[] header = null;
+			String[] data = null;
+			int iteration = 0;
+			while ((line = br.readLine()) != null) {
+				if (iteration == 0) {
+					iteration++;
+					header = line.split(delimiter);
+					continue;
+				}
 
+				data = line.split(delimiter);
+				json = new JSONObject();
+				List<String> errors = new ArrayList<>();
+				for (int i = 0; i < data.length; i++) {
+					String field = header[i];
+					String value = data[i];
+					json.put(field, data[i]);
+					List<Validator> validators = recipientValidationContext.getValidators(field);
+					for (Validator validator : validators) {
+						if (!validator.isValid(value)) {
+							errors.add(validator.errorMessage());
+							break;
+						}
+					}
+
+					json.put("errors", errors);
+					
+				}
+				listAddress.add(new Gson().fromJson(json.toString(), RecipientAddress.class));
+			}
+			return ResponseEntity.ok(listAddress);
+		} catch (Exception e) {
+			log.error(e);
+			return ResponseEntity.badRequest().body(e.getMessage());
+		}
+	}
+
+	@PostMapping(path = "saveRecipients")
+	public ResponseEntity<?> saveRecipients(@RequestBody SaveRecipientRequest request) {
+		try {
+			return ResponseEntity.ok(postcardService.saveRecipientAddress(request));
+		} catch (Exception e) {
+			return ResponseEntity.badRequest().body(e.getMessage());
+		}
+
+	}
+	
+	@PostMapping(path = "updateSenderInfo")
+	public ResponseEntity<?> updateSenderInfo(@RequestBody UpdateSenderRequest request) {
+		try {
+			return ResponseEntity.ok(postcardService.updateSenderAddress(request));
+		} catch (Exception e) {
+			return ResponseEntity.badRequest().body(e.getMessage());
+		}
+
+	}
+	
+	@PostMapping(path = "updateBrandInfo")
+	public ResponseEntity<?> updateBrandInfo(@RequestBody UpdateBrandRequest request) {
+		try {
+			return ResponseEntity.ok(postcardService.updateBrandInfo(request));
+		} catch (Exception e) {
+			return ResponseEntity.badRequest().body(e.getMessage());
+		}
+
+	}
+	
 }
