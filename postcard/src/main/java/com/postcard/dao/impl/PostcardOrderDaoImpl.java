@@ -1,13 +1,23 @@
 package com.postcard.dao.impl;
 
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.jdbc.core.PreparedStatementCreator;
+import org.springframework.jdbc.support.GeneratedKeyHolder;
+import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
 
+import com.google.gson.Gson;
 import com.postcard.dao.BaseDao;
 import com.postcard.dao.PostcardOrderDao;
 import com.postcard.model.PostcardOrder;
+import com.postcard.model.UpdateBrandRequest;
+import com.postcard.model.UpdateSenderRequest;
 
 @Repository
 public class PostcardOrderDaoImpl extends BaseDao implements PostcardOrderDao {
@@ -26,6 +36,12 @@ public class PostcardOrderDaoImpl extends BaseDao implements PostcardOrderDao {
     
     @Value("${deletePostcardOrderQuery}")
     private String deletePostcardOrderQuery;
+    
+    @Value("${updateSenderAddressInfo}")
+    private String updateSenderAddressInfo;
+    
+    @Value("${updateBrandInfo}")
+    private String updateBrandInfo;
     
     @Override
     public void createPostcardOrder(PostcardOrder postcardOrder) {
@@ -68,7 +84,51 @@ public class PostcardOrderDaoImpl extends BaseDao implements PostcardOrderDao {
        }
     
 
-
+    @Override
+	public String updateSenderAddress(UpdateSenderRequest request) {
+		KeyHolder holder = new GeneratedKeyHolder();
+		try {
+			getMainJdbcTemplate().update(new PreparedStatementCreator() {
+				@Override
+				public PreparedStatement createPreparedStatement(Connection connection) throws SQLException {
+					PreparedStatement ps = connection.prepareStatement(updateSenderAddressInfo,
+							Statement.RETURN_GENERATED_KEYS);
+					ps.setString(1, new Gson().toJson(request.getSenderAddress()));
+					ps.setString(2, request.getSenderText());
+					ps.setInt(3, request.getOrderId());
+					return ps;
+				}
+			}, holder);
+		} catch (Exception e) {
+			return e.getMessage();
+		}
+		
+		return "Sender information updated successfully";
+		
+	}
+	
+	@Override
+	public String updateBrandInfo(UpdateBrandRequest request) {
+		KeyHolder holder = new GeneratedKeyHolder();
+		try {
+			getMainJdbcTemplate().update(new PreparedStatementCreator() {
+				@Override
+				public PreparedStatement createPreparedStatement(Connection connection) throws SQLException {
+					PreparedStatement ps = connection.prepareStatement(updateBrandInfo,
+							Statement.RETURN_GENERATED_KEYS);
+					ps.setString(1, new Gson().toJson(request.getBrandingText()));
+					ps.setString(2, request.getBrandText());
+					ps.setInt(3, request.getOrderId());
+					return ps;
+				}
+			}, holder);
+		} catch (Exception e) {
+			return e.getMessage();
+		}
+		
+		return "Brand information updated successfully";
+		
+	}
 
     
     
