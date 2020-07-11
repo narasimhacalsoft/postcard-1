@@ -2,7 +2,6 @@ package com.postcard.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -11,12 +10,12 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 
 import com.postcard.model.CampaignResponse;
-import com.postcard.model.PostcardResponse;
 
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
+import io.swagger.annotations.Authorization;
 
 @Controller
 @Api(tags = { "Campaign API" })
@@ -62,7 +61,7 @@ public class CampaignController {
 
 	@GetMapping(path = "campaigns")
 	@ApiOperation(value = "Gets the actual statistic of the given campaign.", tags = {
-			"Campaign API" }, response = CampaignResponse.class)
+			"Campaign API" }, response = CampaignResponse.class, authorizations = { @Authorization(value="jwtToken") })
 	@ApiResponses({ @ApiResponse(code = 200, message = "Campaign Statistic") })
 	public ResponseEntity<?> campaigns() {
 		try {

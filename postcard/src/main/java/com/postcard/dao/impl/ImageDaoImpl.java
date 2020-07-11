@@ -1,5 +1,6 @@
 package com.postcard.dao.impl;
 
+import java.sql.Blob;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Value;
@@ -40,7 +41,9 @@ public class ImageDaoImpl extends BaseDao implements ImageDao {
             Image obj = new Image();
             obj.setImageType("FrontImage");
             obj.setImageId(rs.getInt("imageId"));
-            //obj.setImage(rs.getBlob("imageId"));
+            Blob blob = rs.getBlob("image");
+            byte[] bytes = blob.getBytes(1, (int) blob.length());
+            obj.setImage(bytes);
             return obj;
             });
             return objects;

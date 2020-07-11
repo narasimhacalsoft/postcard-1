@@ -456,5 +456,16 @@ public class PostcardController {
 		}
 
 	}
+	
+    @PostMapping(path = "submitOrder")
+    public ResponseEntity<?> createPostcardOrder(@RequestParam(value = "orderId", required = true) Long orderId) {
+		try {
+			//create a post card
+			
+			return ResponseEntity.ok(postcardService.submitOrder(postCardRestTemplate, orderId));
+		} catch (Exception e) {
+			return ResponseEntity.badRequest().body(e.getMessage());
+		}
+	}
 
 }
