@@ -30,6 +30,10 @@ public class SenderAddress {
 		this.zip = zip;
 		this.city = city;
 	}
+	public SenderAddress() {
+		super();
+		// TODO Auto-generated constructor stub
+	}
 
 	
 }

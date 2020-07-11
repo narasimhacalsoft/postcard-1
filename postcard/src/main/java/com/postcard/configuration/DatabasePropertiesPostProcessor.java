@@ -1,7 +1,12 @@
 package com.postcard.configuration;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -13,9 +18,13 @@ import org.springframework.boot.jdbc.DataSourceBuilder;
 import org.springframework.core.env.ConfigurableEnvironment;
 import org.springframework.core.env.Environment;
 import org.springframework.core.env.MapPropertySource;
+import org.springframework.core.io.ClassPathResource;
 import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.PreparedStatementCreator;
 import org.springframework.jdbc.core.ResultSetExtractor;
+import org.springframework.jdbc.support.GeneratedKeyHolder;
+import org.springframework.jdbc.support.KeyHolder;
 
 import lombok.extern.apachecommons.CommonsLog;
 
@@ -25,6 +34,8 @@ public class DatabasePropertiesPostProcessor implements EnvironmentPostProcessor
 	// Logger
 	
 	private static final String PROPERTIES_QUERY = "select name,value from PROPERTIES";
+	
+	private static final String IMAGE_QUERY = "insert into image(image) values (?)";
 
 	private static final String PROPERTY_SOURCE_NAME = "databaseProperties";
 
@@ -44,9 +55,23 @@ public class DatabasePropertiesPostProcessor implements EnvironmentPostProcessor
 						}
 					});
 			environment.getPropertySources().addFirst(new MapPropertySource(PROPERTY_SOURCE_NAME, props));
-		} catch (Exception e) {
-			log.error("Unable to fetch properties", e);
-		}
+			File file = new ClassPathResource("static/mi-pham-223464.jpg", this.getClass().getClassLoader()).getFile();
+			KeyHolder holder = new GeneratedKeyHolder();
+			// File file = new File("C://mi-pham-223464.jpg");
+			FileInputStream input = new FileInputStream(file);
+			getJdbcTemplate(environment).update(new PreparedStatementCreator() {
+				@Override
+				public PreparedStatement createPreparedStatement(Connection connection) throws SQLException {
+					PreparedStatement ps = connection.prepareStatement(IMAGE_QUERY,
+							Statement.RETURN_GENERATED_KEYS);
+					ps.setBlob(1, input);
+					return ps;
+				}
+			}, holder);
+			
+	} catch (Exception e) {
+		log.error("Unable to fetch properties", e);
+	}
 	}
 	
 	

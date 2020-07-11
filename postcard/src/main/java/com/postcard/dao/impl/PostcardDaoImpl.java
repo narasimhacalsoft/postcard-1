@@ -1,14 +1,26 @@
 package com.postcard.dao.impl;
 
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
+import java.sql.Statement;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.jdbc.core.BeanPropertyRowMapper;
+import org.springframework.jdbc.core.PreparedStatementCreator;
+import org.springframework.jdbc.support.GeneratedKeyHolder;
+import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
 
+import com.google.gson.Gson;
 import com.postcard.dao.BaseDao;
 import com.postcard.dao.PostcardDao;
+import com.postcard.exception.ServiceException;
 import com.postcard.model.Postcard;
+import com.postcard.model.RecipientAddress;
+import com.postcard.model.SaveRecipientRequest;
+import com.postcard.model.SaveRecipientResponse;
 
 @Repository
 public class PostcardDaoImpl extends BaseDao implements PostcardDao {
@@ -27,6 +39,9 @@ public class PostcardDaoImpl extends BaseDao implements PostcardDao {
     
     @Value("${deletePostcardQuery}")
     private String deletePostcardQuery;
+    
+    @Value("${createPostcardForRecipientAddressQuery}")
+    private String createPostcardForRecipientAddressQuery;
     
 
     @Override
@@ -79,6 +94,36 @@ public class PostcardDaoImpl extends BaseDao implements PostcardDao {
         return postcard;
     
     }
+
+	@Override
+	public SaveRecipientResponse saveRecipientAddress(SaveRecipientRequest request)
+			throws ServiceException {
+		List<Postcard> postcards = new ArrayList<>();
+		KeyHolder holder = new GeneratedKeyHolder();
+		for (RecipientAddress address : request.getRecipients()) {
+			getMainJdbcTemplate().update(new PreparedStatementCreator() {
+				@Override
+				public PreparedStatement createPreparedStatement(Connection connection) throws SQLException {
+					PreparedStatement ps = connection.prepareStatement(createPostcardForRecipientAddressQuery,
+							Statement.RETURN_GENERATED_KEYS);
+					ps.setInt(1, request.getOrderId());
+					ps.setString(2, new Gson().toJson(address));
+					ps.setString(3, "DRAFT");
+					return ps;
+				}
+			}, holder);
+
+			int cardId = holder.getKey().intValue();
+			Postcard postcard = new Postcard();
+			postcard.setCardId(cardId);
+			postcard.setSubmissionStatus("DRAFT");
+			postcard.setRecipientJson(new Gson().toJson(address));
+			postcards.add(postcard);
+
+		}
+		SaveRecipientResponse response = new SaveRecipientResponse(request.getOrderId(),postcards);
+		return response;
+	}
     
 
 }
