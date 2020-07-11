@@ -103,7 +103,7 @@ INSERT INTO `postcard`.`PROPERTIES` (`name`,`value`) VALUES ('management.endpoin
 INSERT INTO `postcard`.`PROPERTIES` (`name`,`value`) VALUES ('management.endpoint.health','true');
 INSERT INTO `postcard`.`PROPERTIES` (`name`,`value`) VALUES ('management.endpoint.info','true');
 INSERT INTO `postcard`.`PROPERTIES` (`name`,`value`) VALUES ('management.endpoint.restart.enabled','true');
-
+INSERT INTO `postcard`.`PROPERTIES` (`name`,`value`) VALUES ('findallPostcardByOrderidQuery','SELECT * FROM Postcard WHERE orderId = ?');
 
 insert into `postcard`.`user`(`userName`,`password`,`role`)values('alten','$2a$10$ixlPY3AAd4ty1l6E2IsQ9OFZi2ba9ZQE0bP7RFcGIWNhyFrrT3YUi','ROLE_USER');
 insert into `postcard`.`user`(`userName`,`password`,`role`)values('admin','$2a$10$ixlPY3AAd4ty1l6E2IsQ9OFZi2ba9ZQE0bP7RFcGIWNhyFrrT3YUi','ROLE_ADMIN');

@@ -17,7 +17,10 @@ import com.google.gson.Gson;
 import com.postcard.dao.BaseDao;
 import com.postcard.dao.PostcardDao;
 import com.postcard.exception.ServiceException;
+import com.postcard.model.GetAllPostcard;
 import com.postcard.model.Postcard;
+import com.postcard.model.PostcardMapper;
+import com.postcard.model.PostcardOrder;
 import com.postcard.model.RecipientAddress;
 import com.postcard.model.SaveRecipientRequest;
 import com.postcard.model.SaveRecipientResponse;
@@ -43,7 +46,14 @@ public class PostcardDaoImpl extends BaseDao implements PostcardDao {
     @Value("${createPostcardForRecipientAddressQuery}")
     private String createPostcardForRecipientAddressQuery;
     
-
+    @Value("${findallPostcardByOrderidQuery}")
+    private String findallPostcardByOrderidQuery;
+    
+    @Value("${findallPostcardOrderQuery}")
+	private String findallPostcardOrderQuery;
+    
+    
+   
     @Override
     public void createPostcard(Postcard postcard) {
         //String sqlQuery = "insert into postcard(orderId,cardKey,recipientJson,submissionStatus,response,attempts,cardStatus) values (?,?,?,?,?,?,?,?)";
@@ -124,6 +134,39 @@ public class PostcardDaoImpl extends BaseDao implements PostcardDao {
 		SaveRecipientResponse response = new SaveRecipientResponse(request.getOrderId(),postcards);
 		return response;
 	}
-    
+
+	@Override
+	public List<GetAllPostcard> getAllPostcards() {
+		List<GetAllPostcard> allPostcards = new ArrayList<>();
+		List<PostcardOrder> postcardOrders = findallPostcardOrder();
+		for (PostcardOrder postcardOrder : postcardOrders) {
+			GetAllPostcard postcard = new GetAllPostcard();
+			postcard.setOrderId(postcardOrder.getOrderId());
+			postcard.setPostcards(findPostcardByOrderId(Long.valueOf(postcardOrder.getOrderId())));
+			postcard.setPostcardOrder(postcardOrder);
+			allPostcards.add(postcard);
+		}
+
+		return allPostcards;
+	}
+
+	@Override
+	public List<Postcard> findPostcardByOrderId(Long orderId) {
+		return query(findallPostcardByOrderidQuery, orderId, new PostcardMapper());
+	}
+
+	@Override
+	public List<PostcardOrder> findallPostcardOrder() {
+		List<PostcardOrder> objects = query(findallPostcardOrderQuery, (rs, rowNum) -> {
+			PostcardOrder obj = new PostcardOrder();
+			obj.setOrderId(rs.getInt("orderId"));
+			obj.setSenderText(rs.getString("senderText"));
+			obj.setSenderJson(rs.getString("senderJson"));
+			obj.setBrandingText(rs.getString("brandingText"));
+			obj.setBrandingJson(rs.getString("brandingJson"));
+			return obj;
+		});
+		return objects;
+	}
 
 }
