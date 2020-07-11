@@ -21,7 +21,7 @@ import io.swagger.annotations.ApiResponses;
 import io.swagger.annotations.Authorization;
 
 @Controller
-@Api(tags = { "Campaign API" })
+@Api(tags = { "Image API" })
 public class ImageController {
 
 	private static final String NEWLINE = "<br/>";
@@ -64,7 +64,7 @@ public class ImageController {
 
 	@GetMapping(path = "getAllImage", produces = MediaType.APPLICATION_JSON_VALUE)
 	@ApiOperation(value = "Gets the static images for selecting.", tags = {
-			"Postcard API" }, authorizations = { @Authorization(value="jwtToken") })
+			"Image API" }, authorizations = { @Authorization(value="jwtToken") })
 	@ApiResponses({ @ApiResponse(code = 200, message = "Getall Image") })
 	public ResponseEntity<?> campaigns() {
 		try {
