@@ -54,6 +54,7 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
+import io.swagger.annotations.Authorization;
 import lombok.extern.apachecommons.CommonsLog;
 
 @Controller
@@ -139,10 +140,14 @@ public class PostcardController {
 	@Autowired
     ValidationContext recipientValidationContext;
 
-	@GetMapping(path = "configs")
-	@ApiOperation(value = "Returns all the configuration related to post card API", tags = {
-			"Postcard API" }, response = String.class)
-	@ApiResponse(code = 200, message = "Configuraitons")
+	//@GetMapping(path = "configs")
+	/*
+	 * @ApiOperation(value =
+	 * "Returns all the configuration related to post card API", tags = {
+	 * "Postcard API" }, response = String.class)
+	 * 
+	 * @ApiResponse(code = 200, message = "Configuraitons")
+	 */
 	public ResponseEntity<?> configurations() {
 	    //log.info("In Configurations");
 		StringBuilder sb = new StringBuilder(NEWLINE);
@@ -155,10 +160,13 @@ public class PostcardController {
 		return ResponseEntity.ok("First Service : " + sb.toString());
 	}
 
-	@GetMapping(path = "createPostcard")
-	@ApiOperation(value = "Returns card key on post card API", tags = {
-			"Postcard API" }, response = PostcardResponse.class)
-	@ApiResponses({ @ApiResponse(code = 201, message = "Created Postcard") })
+	//@GetMapping(path = "createPostcard")
+	/*
+	 * @ApiOperation(value = "Returns card key on post card API", tags = {
+	 * "Postcard API" }, response = PostcardResponse.class)
+	 * 
+	 * @ApiResponses({ @ApiResponse(code = 201, message = "Created Postcard") })
+	 */
 	public ResponseEntity<?> createPostcard() {
 		try {
 
@@ -175,10 +183,13 @@ public class PostcardController {
 		}
 	}
 	
-	@GetMapping(path = "state")
-	@ApiOperation(value = "Gets the actual state for the given postcard.", tags = {
-			"Postcard API" }, response = StateResponse.class)
-	@ApiResponses({ @ApiResponse(code = 200, message = "Card state") })
+//	@GetMapping(path = "state")
+	/*
+	 * @ApiOperation(value = "Gets the actual state for the given postcard.", tags =
+	 * { "Postcard API" }, response = StateResponse.class)
+	 * 
+	 * @ApiResponses({ @ApiResponse(code = 200, message = "Card state") })
+	 */
 	public ResponseEntity<?> state() {
 		try {
 			String url = postcardBaseURL + postcardAPI + "6f504948-167f-4c33-8366-cd2ac57b15a5" + stateEndPoint;
@@ -193,10 +204,13 @@ public class PostcardController {
 		}
 	}
 	
-	@GetMapping(path = "approval")
-	@ApiOperation(value = "Approve the given postcard for printing.", tags = {
-			"Postcard API" }, response = ApprovalResponse.class)
-	@ApiResponses({ @ApiResponse(code = 200, message = "Card approval") })
+	//@GetMapping(path = "approval")
+	/*
+	 * @ApiOperation(value = "Approve the given postcard for printing.", tags = {
+	 * "Postcard API" }, response = ApprovalResponse.class)
+	 * 
+	 * @ApiResponses({ @ApiResponse(code = 200, message = "Card approval") })
+	 */
 	public ResponseEntity<?> approval() {
 		try {
 			String url = postcardBaseURL + postcardAPI + "6f504948-167f-4c33-8366-cd2ac57b15a5" + approvalEndPoint;
@@ -211,10 +225,13 @@ public class PostcardController {
 		}
 	}
 	
-	@GetMapping(path = "sender")
-	@ApiOperation(value = "Updates the sender address in the given postcard.", tags = {
-			"Postcard API" }, response = SenderResponse.class)
-	@ApiResponses({ @ApiResponse(code = 200, message = "Update Sender") })
+	//@GetMapping(path = "sender")
+	/*
+	 * @ApiOperation(value = "Updates the sender address in the given postcard.",
+	 * tags = { "Postcard API" }, response = SenderResponse.class)
+	 * 
+	 * @ApiResponses({ @ApiResponse(code = 200, message = "Update Sender") })
+	 */
 	public ResponseEntity<?> updateSender() {
 		try {
 			String url = postcardBaseURL + postcardAPI + "6f504948-167f-4c33-8366-cd2ac57b15a5" + senderAddressEndPoint;
@@ -231,10 +248,13 @@ public class PostcardController {
 		}
 	}
 	
-	@GetMapping(path = "recipient")
-	@ApiOperation(value = "Updates the recipient address in the given postcard.", tags = {
-			"Postcard API" }, response = RecipientResponse.class)
-	@ApiResponses({ @ApiResponse(code = 200, message = "Update Recipient") })
+//	@GetMapping(path = "recipient")
+	/*
+	 * @ApiOperation(value = "Updates the recipient address in the given postcard.",
+	 * tags = { "Postcard API" }, response = RecipientResponse.class)
+	 * 
+	 * @ApiResponses({ @ApiResponse(code = 200, message = "Update Recipient") })
+	 */
 	public ResponseEntity<?> updateRecipient() {
 		try {
 			String url = postcardBaseURL + postcardAPI + "6f504948-167f-4c33-8366-cd2ac57b15a5" + recipientAddressEndPoint;
@@ -252,10 +272,13 @@ public class PostcardController {
 		}
 	}
 	
-	@GetMapping(path = "image")
-	@ApiOperation(value = "Updates the front image in the given postcard.", tags = {
-			"Postcard API" }, response = ImageResponse.class)
-	@ApiResponses({ @ApiResponse(code = 200, message = "Update Image") })
+	//@GetMapping(path = "image")
+	/*
+	 * @ApiOperation(value = "Updates the front image in the given postcard.", tags
+	 * = { "Postcard API" }, response = ImageResponse.class)
+	 * 
+	 * @ApiResponses({ @ApiResponse(code = 200, message = "Update Image") })
+	 */
 	public ResponseEntity<?> updateImage() {
 		try {
 			String url = postcardBaseURL + postcardAPI + "6f504948-167f-4c33-8366-cd2ac57b15a5" + frontImageEndPoint;
@@ -275,10 +298,13 @@ public class PostcardController {
 		}
 	}
 	
-	@GetMapping(path = "sendertext")
-	@ApiOperation(value = "Updates the sender text in the given postcard.", tags = {
-			"Postcard API" }, response = SenderTextResponse.class)
-	@ApiResponses({ @ApiResponse(code = 200, message = "Update Sendertext") })
+	//@GetMapping(path = "sendertext")
+	/*
+	 * @ApiOperation(value = "Updates the sender text in the given postcard.", tags
+	 * = { "Postcard API" }, response = SenderTextResponse.class)
+	 * 
+	 * @ApiResponses({ @ApiResponse(code = 200, message = "Update Sendertext") })
+	 */
 	public ResponseEntity<?> updateSenderText() {
 		try {
 			String url = postcardBaseURL + postcardAPI + "6f504948-167f-4c33-8366-cd2ac57b15a5" + senderTextEndPoint + "Testing";
@@ -294,10 +320,14 @@ public class PostcardController {
 		}
 	}
 	
-	@GetMapping(path = "brandingtext")
-	@ApiOperation(value = "Updates the branding text in the given postcard. If branding text is empty, branding text will be reset.", tags = {
-			"Postcard API" }, response = BrandingTextResponse.class)
-	@ApiResponses({ @ApiResponse(code = 200, message = "Update Sendertext") })
+	//@GetMapping(path = "brandingtext")
+	/*
+	 * @ApiOperation(value =
+	 * "Updates the branding text in the given postcard. If branding text is empty, branding text will be reset."
+	 * , tags = { "Postcard API" }, response = BrandingTextResponse.class)
+	 * 
+	 * @ApiResponses({ @ApiResponse(code = 200, message = "Update Sendertext") })
+	 */
 	public ResponseEntity<?> updateBrandingText() {
 		try {
 			String url = postcardBaseURL + postcardAPI + "6f504948-167f-4c33-8366-cd2ac57b15a5" + brandingTextEndPoint;
@@ -315,6 +345,9 @@ public class PostcardController {
 	}
 	
 	@GetMapping(path = "previews/front")
+	@ApiOperation(value = "Gets the previews front", tags = {
+	"Postcard API" }, authorizations = { @Authorization(value="jwtToken") })
+	@ApiResponses({ @ApiResponse(code = 200, message = "Preview Front Image") })
 	public ResponseEntity<?> previewFront(@RequestParam String cardKey) {
 		try {
 			String url = postcardBaseURL + postcardAPI +cardKey+ frontPreviewsEndPoint;
@@ -330,6 +363,9 @@ public class PostcardController {
 	}
 	
 	@GetMapping(path = "previews/back")
+	@ApiOperation(value = "Gets the previews Back", tags = {
+	"Postcard API" }, authorizations = { @Authorization(value="jwtToken") })
+	@ApiResponses({ @ApiResponse(code = 200, message = "Preview Back Image") })
 	public ResponseEntity<?> previewBack(@RequestParam String cardKey) {
 		try {
 			String url = postcardBaseURL + postcardAPI +cardKey+ backPreviewsEndPoint;
@@ -344,10 +380,15 @@ public class PostcardController {
 		}
 	}
 	
-	@GetMapping(path = "branding/image")
-    @ApiOperation(value = "Uploads a logo for the postcard.", tags = {
-            "Postcard API" }, response = String.class)
-    @ApiResponses({ @ApiResponse(code = 200, message = "Update Branding Image") })
+	/*
+	 * @GetMapping(path = "branding/image")
+	 * 
+	 * @ApiOperation(value = "Uploads a logo for the postcard.", tags = {
+	 * "Postcard API" }, response = String.class)
+	 * 
+	 * @ApiResponses({ @ApiResponse(code = 200, message = "Update Branding Image")
+	 * })
+	 */
     public ResponseEntity<?> updateBrandingImage() {
         try {
             String url = postcardBaseURL + postcardAPI + "6f504948-167f-4c33-8366-cd2ac57b15a5" + brandingImageEndPoint;
@@ -368,10 +409,13 @@ public class PostcardController {
         
 	}
 	
-	@GetMapping(path = "branding/stamp")
-    @ApiOperation(value = "Uploads a logo for the postcard.", tags = {
-            "Postcard API" }, response = String.class)
-    @ApiResponses({ @ApiResponse(code = 200, message = "Update Stamp Image") })
+	//@GetMapping(path = "branding/stamp")
+	/*
+	 * @ApiOperation(value = "Uploads a logo for the postcard.", tags = {
+	 * "Postcard API" }, response = String.class)
+	 * 
+	 * @ApiResponses({ @ApiResponse(code = 200, message = "Update Stamp Image") })
+	 */
     public ResponseEntity<?> updateStampImage() {
         try {
             String url = postcardBaseURL + postcardAPI + "6f504948-167f-4c33-8366-cd2ac57b15a5" + "/branding/stamp";
@@ -393,6 +437,9 @@ public class PostcardController {
 	}
 	
 	@PostMapping(path = "validateRecipients", produces = MediaType.APPLICATION_JSON_VALUE)
+	@ApiOperation(value = "Validate upload recipient address file and validate Mandatory and Maximumn lenght", tags = {
+	"Postcard API" }, authorizations = { @Authorization(value="jwtToken") })
+	@ApiResponses({ @ApiResponse(code = 200, message = "validate CSV file") })
 	public ResponseEntity<?> validate(@RequestParam("file") MultipartFile file) {
 		try {
 			List<RecipientAddress> listAddress=new ArrayList<>();
@@ -438,6 +485,9 @@ public class PostcardController {
 	}
 
 	@PostMapping(path = "saveRecipients")
+	@ApiOperation(value = "Save Receipient Address Details", tags = {
+	"Postcard API" }, authorizations = { @Authorization(value="jwtToken") })
+	@ApiResponses({ @ApiResponse(code = 200, message = "Recipient details saved Successfully") })
 	public ResponseEntity<?> saveRecipients(@RequestBody SaveRecipientRequest request) {
 		try {
 			return ResponseEntity.ok(postcardService.saveRecipientAddress(request));
@@ -448,6 +498,9 @@ public class PostcardController {
 	}
 	
 	@GetMapping(path = "getAllPostcards")
+	@ApiOperation(value = "Get all the Postcard and PostcardOrder Details", tags = {
+	"Postcard API" }, authorizations = { @Authorization(value="jwtToken") })
+	@ApiResponses({ @ApiResponse(code = 200, message = "Get the PostCard and PostcardOrder details") })
 	public ResponseEntity<?> getAllPostcards() {
 		try {
 			return ResponseEntity.ok(postcardService.getAllPostcards());
@@ -455,6 +508,20 @@ public class PostcardController {
 			return ResponseEntity.badRequest().body(e.getMessage());
 		}
 
+	}
+	
+    @PostMapping(path = "submitOrder")
+    @ApiOperation(value = "Submit the Postcard order", tags = {
+	"Postcard API" }, authorizations = { @Authorization(value="jwtToken") })
+	@ApiResponses({ @ApiResponse(code = 200, message = "Postcard submitted Successfully") })
+    public ResponseEntity<?> createPostcardOrder(@RequestParam(value = "orderId", required = true) Long orderId) {
+		try {
+			//create a post card
+			
+			return ResponseEntity.ok(postcardService.submitOrder(postCardRestTemplate, orderId));
+		} catch (Exception e) {
+			return ResponseEntity.badRequest().body(e.getMessage());
+		}
 	}
 
 }

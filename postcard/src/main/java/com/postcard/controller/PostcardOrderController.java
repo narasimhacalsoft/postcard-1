@@ -1,8 +1,5 @@
 package com.postcard.controller;
 
-import java.io.File;
-import java.io.FileInputStream;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -15,17 +12,24 @@ import com.postcard.model.UpdateSenderRequest;
 import com.postcard.service.PostcardOrderService;
 
 import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiResponse;
+import io.swagger.annotations.ApiResponses;
+import io.swagger.annotations.Authorization;
 import lombok.extern.apachecommons.CommonsLog;
 
 @Controller
 @Api(tags = { "PostcardOrder API" })
 @CommonsLog
 public class PostcardOrderController {
-	
+
 	@Autowired
-    PostcardOrderService orderService;
-	
+	PostcardOrderService orderService;
+
 	@PostMapping(path = "updateSenderInfo")
+	@ApiOperation(value = "update Sender information", tags = { "PostcardOrder API" }, authorizations = {
+			@Authorization(value = "jwtToken") })
+	@ApiResponses({ @ApiResponse(code = 200, message = "Update sender information Successfully") })
 	public ResponseEntity<?> updateSenderInfo(@RequestBody UpdateSenderRequest request) {
 		try {
 			return ResponseEntity.ok(orderService.updateSenderAddress(request));
@@ -34,8 +38,11 @@ public class PostcardOrderController {
 		}
 
 	}
-	
+
 	@PostMapping(path = "updateBrandInfo")
+	@ApiOperation(value = "update Branding information", tags = { "PostcardOrder API" }, authorizations = {
+			@Authorization(value = "jwtToken") })
+	@ApiResponses({ @ApiResponse(code = 200, message = "Update Branding information Successfully") })
 	public ResponseEntity<?> updateBrandInfo(@RequestBody UpdateBrandRequest request) {
 		try {
 			return ResponseEntity.ok(orderService.updateBrandInfo(request));
@@ -44,9 +51,12 @@ public class PostcardOrderController {
 		}
 
 	}
-	
+
 	@PostMapping(path = "createPostcardOrder")
-	  public ResponseEntity<?> createPostcardOrder(@RequestParam(value = "imageId", required = true) Long imageId) {
+	@ApiOperation(value = "Create Postcard Order", tags = { "PostcardOrder API" }, authorizations = {
+			@Authorization(value = "jwtToken") })
+	@ApiResponses({ @ApiResponse(code = 200, message = "Postcard Created Successfully") })
+	public ResponseEntity<?> createPostcardOrder(@RequestParam(value = "imageId", required = true) Long imageId) {
 		try {
 			return ResponseEntity.ok(orderService.createPostcardOrder(imageId));
 		} catch (Exception e) {
