@@ -315,12 +315,9 @@ public class PostcardController {
 	}
 	
 	@GetMapping(path = "previews/front")
-	@ApiOperation(value = "Gives a preview of the front side for the given postcard.", tags = {
-			"Campaign API" }, response = PreviewFrontResponse.class)
-	@ApiResponses({ @ApiResponse(code = 200, message = "Preview Front") })
-	public ResponseEntity<?> previewFront() {
+	public ResponseEntity<?> previewFront(@RequestParam String cardKey) {
 		try {
-			String url = postcardBaseURL + postcardAPI + "6f504948-167f-4c33-8366-cd2ac57b15a5" + frontPreviewsEndPoint;
+			String url = postcardBaseURL + postcardAPI +cardKey+ frontPreviewsEndPoint;
 			HttpHeaders headers = new HttpHeaders();
 			headers.setContentType(MediaType.APPLICATION_JSON);
 			//HttpEntity<String> request = new HttpEntity<String>("{}", headers);
@@ -333,12 +330,9 @@ public class PostcardController {
 	}
 	
 	@GetMapping(path = "previews/back")
-	@ApiOperation(value = "Gives a preview of the back side for the given postcard.", tags = {
-			"Campaign API" }, response = PreviewBackResponse.class)
-	@ApiResponses({ @ApiResponse(code = 200, message = "Preview Back") })
-	public ResponseEntity<?> previewBack() {
+	public ResponseEntity<?> previewBack(@RequestParam String cardKey) {
 		try {
-			String url = postcardBaseURL + postcardAPI + "6f504948-167f-4c33-8366-cd2ac57b15a5" + backPreviewsEndPoint;
+			String url = postcardBaseURL + postcardAPI +cardKey+ backPreviewsEndPoint;
 			HttpHeaders headers = new HttpHeaders();
 			headers.setContentType(MediaType.APPLICATION_JSON);
 			//HttpEntity<String> request = new HttpEntity<String>("{}", headers);
