@@ -33,7 +33,7 @@ public abstract class BaseDao {
 		return mainJdbcTemplate.query(sql, getPreparedStatementSetter(param), BeanPropertyRowMapper.newInstance(clazz));
 	}
 
-	public <T> List<T> query(String sql, Integer param, RowMapper<T> rowMapper) throws DataAccessException {
+	public <T> List<T> query(String sql, Long param, RowMapper<T> rowMapper) throws DataAccessException {
 		return mainJdbcTemplate.query(sql, getPreparedStatementSetter(param), rowMapper);
 	}
 
@@ -54,11 +54,11 @@ public abstract class BaseDao {
 		return mainJdbcTemplate;
 	}
 
-	private PreparedStatementSetter getPreparedStatementSetter(Integer param) {
+	private PreparedStatementSetter getPreparedStatementSetter(Long param) {
 		return new PreparedStatementSetter() {
 			@Override
 			public void setValues(PreparedStatement ps) throws SQLException {
-				ps.setInt(1, param);
+				ps.setLong(1, param);
 			}
 		};
 	}

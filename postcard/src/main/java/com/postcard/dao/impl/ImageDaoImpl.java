@@ -40,6 +40,7 @@ public class ImageDaoImpl extends BaseDao implements ImageDao {
             Image obj = new Image();
             obj.setImageType("FrontImage");
             obj.setImageId(rs.getInt("imageId"));
+            //obj.setImage(rs.getBlob("imageId"));
             return obj;
             });
             return objects;

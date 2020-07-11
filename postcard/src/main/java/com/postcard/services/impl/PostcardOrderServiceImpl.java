@@ -21,10 +21,11 @@ public class PostcardOrderServiceImpl implements PostcardOrderService{
     PostcardOrderDao postcardOrderDao;
     
     @Override
-    public void createPostcardOrder(PostcardOrder order) {
-        orderDao.createPostcardOrder(order);       
+    public String createPostcardOrder(long imageId) {
+        String postcardOrderId = orderDao.createPostcardOrder(imageId);
+        return postcardOrderId;
     }
-
+    
     @Override
     public void updatePostcardOrder(PostcardOrder order) {
         orderDao.updatePostcardOrder(order);
@@ -56,6 +57,7 @@ public class PostcardOrderServiceImpl implements PostcardOrderService{
 	public String updateBrandInfo(UpdateBrandRequest request) {
 		return postcardOrderDao.updateBrandInfo(request);
 	}
+
 
 
 }
