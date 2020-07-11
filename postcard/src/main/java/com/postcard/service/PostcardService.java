@@ -3,6 +3,7 @@ package com.postcard.service;
 import java.util.List;
 
 import com.postcard.exception.ServiceException;
+import com.postcard.model.GetAllPostcard;
 import com.postcard.model.Postcard;
 import com.postcard.model.SaveRecipientRequest;
 import com.postcard.model.SaveRecipientResponse;
@@ -20,5 +21,7 @@ public interface PostcardService {
     void deletePostcard(final Postcard postcard);
     
     SaveRecipientResponse saveRecipientAddress(SaveRecipientRequest request) throws ServiceException;
+    
+    List<GetAllPostcard> getAllPostcards();
 
 }

@@ -8,6 +8,7 @@ import org.springframework.util.CollectionUtils;
 
 import com.postcard.dao.PostcardDao;
 import com.postcard.exception.ServiceException;
+import com.postcard.model.GetAllPostcard;
 import com.postcard.model.Postcard;
 import com.postcard.model.RecipientAddress;
 import com.postcard.model.SaveRecipientRequest;
@@ -55,6 +56,11 @@ public class PostcardServiceImpl implements PostcardService{
 			}
 		}
 		return postcardDao.saveRecipientAddress(request);
+	}
+
+	@Override
+	public List<GetAllPostcard> getAllPostcards() {
+		return postcardDao.getAllPostcards();
 	}
 
 }

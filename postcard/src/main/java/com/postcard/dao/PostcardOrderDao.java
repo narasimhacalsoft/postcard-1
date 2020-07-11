@@ -21,5 +21,6 @@ public interface PostcardOrderDao {
     String updateSenderAddress(UpdateSenderRequest request);
     
     String updateBrandInfo(UpdateBrandRequest request);
-
+    
+  
 }
