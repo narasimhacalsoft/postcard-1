@@ -71,6 +71,12 @@ public class PostcardDaoImpl extends BaseDao implements PostcardDao {
         //mainJdbcTemplate.update(sqlQuery, postcard.getrecipientJson(),postcard.getsubmissionStatus(),postcard.getResponse(),postcard.getAttempts(),postcard.getcardStatus());
         }
     
+	@Override
+	public void updatePostcardkey(Postcard postcard) {
+		update("update postcard set cardKey =? where cardId = ?", postcard.getCardKey(), postcard.getCardId());
+		
+	}
+    
     @Override
     public List<Postcard> findallPostcard() {
         //String sqlQuery = "select * from postcard";
@@ -168,5 +174,9 @@ public class PostcardDaoImpl extends BaseDao implements PostcardDao {
 		});
 		return objects;
 	}
+
+
+    
+
 
 }

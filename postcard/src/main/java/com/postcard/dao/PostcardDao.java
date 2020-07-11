@@ -15,6 +15,8 @@ public interface PostcardDao {
     
     void updatePostcard(final Postcard postcard);
     
+    void updatePostcardkey(final Postcard postcard);
+    
     List<Postcard> findallPostcard();
     
     Postcard findOne(Long card_id);

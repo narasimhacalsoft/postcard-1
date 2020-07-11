@@ -78,7 +78,7 @@ public class PostcardOrderDaoImpl extends BaseDao implements PostcardOrderDao {
 
 	@Override
 	public PostcardOrder findOne(Long orderId) {
-		PostcardOrder postcardOrder = queryForObject(findOnePostcardOrderQuery, PostcardOrder.class, 1000);
+		PostcardOrder postcardOrder = queryForObject(findOnePostcardOrderQuery, PostcardOrder.class, orderId);
 		return postcardOrder;
 
 	}
