@@ -1,11 +1,7 @@
 package com.postcard.services.impl;
 
-import java.awt.image.BufferedImage;
-import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.util.List;
-
-import javax.imageio.ImageIO;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -26,6 +22,7 @@ import com.postcard.dao.PostcardOrderDao;
 import com.postcard.exception.ServiceException;
 import com.postcard.model.ApprovalResponse;
 import com.postcard.model.BrandingImageResponse;
+import com.postcard.model.BrandingStampResponse;
 import com.postcard.model.BrandingTextResponse;
 import com.postcard.model.GetAllPostcard;
 import com.postcard.model.Image;
@@ -33,7 +30,6 @@ import com.postcard.model.Postcard;
 import com.postcard.model.PostcardOrder;
 import com.postcard.model.PostcardResponse;
 import com.postcard.model.RecipientAddress;
-import com.postcard.model.RecipientAddressRequest;
 import com.postcard.model.RecipientResponse;
 import com.postcard.model.SaveRecipientRequest;
 import com.postcard.model.SaveRecipientResponse;
@@ -118,6 +114,11 @@ public class PostcardServiceImpl implements PostcardService {
 		List<Postcard> postcards = postcardDao.findallPostcard();
 		return postcards;
 	}
+	
+	public List<Postcard> findallPostcardByOrderId( long orderId) {
+		List<Postcard> postcards = postcardDao.findPostcardByOrderId(orderId);
+		return postcards;
+	}
 
 	public Postcard findOne(Long card_id) {
 		Postcard postcard = postcardDao.findOne(card_id);
@@ -149,12 +150,11 @@ public class PostcardServiceImpl implements PostcardService {
 		PostcardOrder postcardOrder = postcardOrderDao.findOne(orderId);
 
 		// Write a query to find all the postcards for given orderID
-		List<Postcard> postcardOrderList = postcardDao.findallPostcard();
+		List<Postcard> postcardOrderList = postcardDao.findPostcardByOrderId(orderId);
 		for (Postcard postcard : postcardOrderList) {
 			HttpHeaders headers = new HttpHeaders();
 			// Create post card
 			String url = postcardBaseURL + createPostcardEndPoint + campaignKey;
-
 			headers.setContentType(MediaType.APPLICATION_JSON);
 			HttpEntity<String> request = new HttpEntity<String>("{}", headers);
 			ResponseEntity<PostcardResponse> responseEntity = postCardRestTemplate.postForEntity(url, request,
@@ -163,14 +163,18 @@ public class PostcardServiceImpl implements PostcardService {
 			postcard.setCardKey(responseEntity.getBody().getCardKey());
 			updatePostcardkey(postcard);
 
-			// Update sender info
+			// Update post card
 			updateSender(postCardRestTemplate, postcard.getCardKey(), postcardOrder);
 			updateSenderText(postCardRestTemplate, postcard.getCardKey(), postcardOrder);
 			updateBrandingText(postCardRestTemplate, postcard.getCardKey(), postcardOrder);
 			updateRecipient(postCardRestTemplate, postcard.getCardKey(), postcard);
 			updateImage(postCardRestTemplate, postcard.getCardKey(), postcardOrder);
+			updateBrandingImage(postCardRestTemplate, postcard.getCardKey(), postcard);
+			updateStampImage(postCardRestTemplate, postcard.getCardKey(), postcard);
 			approvePostcard(postCardRestTemplate, postcard.getCardKey(), postcard);
+			
 			getPostcardState(postCardRestTemplate, postcard.getCardKey(), postcardOrder);
+			
 
 			//
 
@@ -179,7 +183,8 @@ public class PostcardServiceImpl implements PostcardService {
 		return postcardOrder;
 	}
 
-	private void updateRecipient(OAuth2RestTemplate postCardRestTemplate, String postcardKey, Postcard postcard) {
+	@Override
+	public void updateRecipient(OAuth2RestTemplate postCardRestTemplate, String postcardKey, Postcard postcard) {
 
 		try {
 			String url = postcardBaseURL + postcardAPI + postcardKey + recipientAddressEndPoint;
@@ -225,20 +230,6 @@ public class PostcardServiceImpl implements PostcardService {
 		}
 	}
 	
-	private void approvePostcard(OAuth2RestTemplate postCardRestTemplate, String postcardKey, Postcard postcard) {
-		try {
-			String url = postcardBaseURL + postcardAPI + postcardKey + approvalEndPoint;
-			HttpHeaders headers = new HttpHeaders();
-			headers.setContentType(MediaType.APPLICATION_JSON);
-			HttpEntity<String> request = new HttpEntity<String>("{}", headers);
-			ResponseEntity<ApprovalResponse> responseEntity = postCardRestTemplate.postForEntity(url, request, ApprovalResponse.class);
-			System.out.println(responseEntity.getBody());
-		} catch (Exception e) {
-			System.out.println(e);
-		}
-		
-	}
-
 	@Override
 	public void updateSenderText(OAuth2RestTemplate postCardRestTemplate, String postcardKey,
 			PostcardOrder postcardOrder) {
@@ -283,7 +274,7 @@ public class PostcardServiceImpl implements PostcardService {
 	@Override
 	public void updateImage(OAuth2RestTemplate postCardRestTemplate, String postcardKey, PostcardOrder postcardOrder) {
 		try {
-			String url = postcardBaseURL + postcardAPI + postcardKey + brandingImageEndPoint;
+			String url = postcardBaseURL + postcardAPI + postcardKey + frontImageEndPoint;
 			Image image = imageService.findOne((long) postcardOrder.getImageId().intValue());
 			LinkedMultiValueMap<String, Object> map = new LinkedMultiValueMap<>();
 			FileSystemResource value = new FileSystemResource(new File("C://mi-pham-223464.jpg"));
@@ -308,7 +299,62 @@ public class PostcardServiceImpl implements PostcardService {
 		}
 
 	}
+	
+	@Override
+	public void updateStampImage(OAuth2RestTemplate postCardRestTemplate, String postcardKey, Postcard postcard) {
+		try {
+            String url = postcardBaseURL + postcardAPI + postcardKey + stampImageEndPoint;
+            LinkedMultiValueMap<String, Object> map = new LinkedMultiValueMap<>();
+            FileSystemResource value = new FileSystemResource(new File("C://mi-pham-223464.jpg")); 
+            map.add("stamp", value);
+            HttpHeaders headers = new HttpHeaders();
+            headers.setContentType(MediaType.MULTIPART_FORM_DATA);
+            HttpEntity<LinkedMultiValueMap<String, Object>> requestEntity = new HttpEntity<>(map, headers);
+            //RestTemplate restTemplate = new RestTemplate();
+            postCardRestTemplate.getMessageConverters().add(new ByteArrayHttpMessageConverter());
+            ResponseEntity<BrandingStampResponse> responseEntity = postCardRestTemplate.exchange(url, HttpMethod.PUT, requestEntity, BrandingStampResponse.class);
+            System.out.println(responseEntity.getBody());
+        } catch (Exception e) {
+            System.out.println(e);
+        }
+	}
 
+	@Override
+	public void updateBrandingImage(OAuth2RestTemplate postCardRestTemplate, String postcardKey, Postcard postcard) {
+		try {
+            String url = postcardBaseURL + postcardAPI + postcardKey + brandingImageEndPoint;
+            LinkedMultiValueMap<String, Object> map = new LinkedMultiValueMap<>();
+            FileSystemResource value = new FileSystemResource(new File("C://mi-pham-223464.jpg")); 
+            map.add("image", value);
+            HttpHeaders headers = new HttpHeaders();
+            headers.setContentType(MediaType.MULTIPART_FORM_DATA);
+            HttpEntity<LinkedMultiValueMap<String, Object>> requestEntity = new HttpEntity<>(map, headers);
+            //RestTemplate restTemplate = new RestTemplate();
+            postCardRestTemplate.getMessageConverters().add(new ByteArrayHttpMessageConverter());
+            ResponseEntity<BrandingImageResponse> responseEntity = postCardRestTemplate.exchange(url, HttpMethod.PUT, requestEntity, BrandingImageResponse.class);
+            System.out.println(responseEntity.getBody());
+        } catch (Exception e) {
+            System.out.println(e);
+        }
+	}
+
+	@Override
+	public void approvePostcard(OAuth2RestTemplate postCardRestTemplate, String postcardKey, Postcard postcard) {
+		try {
+			String url = postcardBaseURL + postcardAPI + postcardKey + approvalEndPoint;
+			HttpHeaders headers = new HttpHeaders();
+			headers.setContentType(MediaType.APPLICATION_JSON);
+			HttpEntity<String> request = new HttpEntity<String>("{}", headers);
+			ResponseEntity<ApprovalResponse> responseEntity = postCardRestTemplate.postForEntity(url, request, ApprovalResponse.class);
+			System.out.println(responseEntity.getBody());
+			//Update postcard response
+			
+		} catch (Exception e) {
+			System.out.println(e);
+		}
+		
+	}
+	
 	@Override
 	public ResponseEntity<?> getPostcardState(OAuth2RestTemplate postCardRestTemplate, String postcardKey,
 			PostcardOrder postcardOrder) {
@@ -316,9 +362,8 @@ public class PostcardServiceImpl implements PostcardService {
 			String url = postcardBaseURL + postcardAPI + postcardKey + stateEndPoint;
 			HttpHeaders headers = new HttpHeaders();
 			headers.setContentType(MediaType.APPLICATION_JSON);
-			// HttpEntity<String> request = new HttpEntity<String>("{}",
-			// headers);
 			ResponseEntity<StateResponse> responseEntity = postCardRestTemplate.getForEntity(url, StateResponse.class);
+			//update the state of the postcard
 			System.out.println(responseEntity.getBody());
 			return responseEntity;
 		} catch (Exception e) {

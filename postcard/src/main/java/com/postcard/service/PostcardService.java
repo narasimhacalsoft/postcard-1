@@ -21,6 +21,8 @@ public interface PostcardService {
     
     List<Postcard> findallPostcard();
     
+    List<Postcard> findallPostcardByOrderId(long orderId);
+    
     Postcard findOne(Long card_id);
     
     void deletePostcard(final Postcard postcard);
@@ -33,6 +35,8 @@ public interface PostcardService {
     
     void updatePostcardkey(final Postcard postcard);
     
+    void updateRecipient(OAuth2RestTemplate postCardRestTemplate, String postcardKey, Postcard postcard);
+    
     void updateSender(OAuth2RestTemplate postCardRestTemplate, String postcardKey, PostcardOrder postcardOrder);
     
     void updateSenderText(OAuth2RestTemplate postCardRestTemplate, String postcardKey, PostcardOrder postcardOrder); 
@@ -40,6 +44,12 @@ public interface PostcardService {
     void updateBrandingText(OAuth2RestTemplate postCardRestTemplate, String postcardKey, PostcardOrder postcardOrder);
     
     void updateImage(OAuth2RestTemplate postCardRestTemplate, String postcardKey, PostcardOrder postcardOrder);
+    
+    void updateStampImage(OAuth2RestTemplate postCardRestTemplate, String postcardKey, Postcard postcard);
+    
+    void updateBrandingImage(OAuth2RestTemplate postCardRestTemplate, String postcardKey, Postcard postcard);
+
+    void approvePostcard(OAuth2RestTemplate postCardRestTemplate, String postcardKey, Postcard postcard);
     
     ResponseEntity<?> getPostcardState(OAuth2RestTemplate postCardRestTemplate, String postcardKey, PostcardOrder postcardOrder);
     
