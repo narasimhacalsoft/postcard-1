@@ -65,7 +65,7 @@ public class PostcardOrderDaoImpl extends BaseDao implements PostcardOrderDao {
 		return postcardOrder;
 		}
 		catch (Exception e) {
-			System.out.println("sdgsgg"+e);
+			System.out.println(e);
 			return null;
 		}
 		
@@ -74,7 +74,8 @@ public class PostcardOrderDaoImpl extends BaseDao implements PostcardOrderDao {
 	@Override
 	public void updatePostcardOrder(PostcardOrder postcardOrder) {
 		// hardcoded for testing
-		update(updatePostcardOrderQuery, "sender text", "sender json", "branding text", "branding json", 2000);
+		//update(updatePostcardOrderQuery, "sender text", "sender json", "branding text", "branding json", 2000);
+		update(updatePostcardOrderQuery, postcardOrder.getSenderText(), postcardOrder.getSenderJson(), postcardOrder.getBrandingText(), postcardOrder.getBrandingJson(), postcardOrder.getImageId(), postcardOrder.getOrderId());
 	}
 
 	@Override

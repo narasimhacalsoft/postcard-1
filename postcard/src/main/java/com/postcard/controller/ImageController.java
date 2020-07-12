@@ -1,5 +1,8 @@
 package com.postcard.controller;
 
+import java.io.BufferedReader;
+import java.io.ByteArrayInputStream;
+import java.io.InputStreamReader;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,6 +12,9 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.postcard.model.CampaignResponse;
 import com.postcard.model.Image;
@@ -70,6 +76,22 @@ public class ImageController {
 		try {
 			List<Image> images= imageService.findallImage();
 			return ResponseEntity.ok(images);
+		} catch (Exception e) {
+			System.out.println(e);
+			return ResponseEntity.badRequest().body(e.getMessage());
+		}
+	}
+	
+	@PostMapping(path = "uploadStamp", produces = MediaType.APPLICATION_JSON_VALUE)
+	@ApiOperation(value = "Uploads stamp for the postcard", tags = {
+			"Image API" }, authorizations = { @Authorization(value="jwtToken") })
+	@ApiResponses({ @ApiResponse(code = 200, message = "Stamp Uploaded") })
+	public ResponseEntity<?> uploadStamp(@RequestParam("file") MultipartFile file, @RequestParam("orderId") long orderId) {
+		try {
+			Image image = new Image();
+			image.setImage(file.getBytes());
+			String imageId = imageService.createImage(file,orderId, "stamp");
+			return ResponseEntity.ok(imageId);
 		} catch (Exception e) {
 			System.out.println(e);
 			return ResponseEntity.badRequest().body(e.getMessage());
