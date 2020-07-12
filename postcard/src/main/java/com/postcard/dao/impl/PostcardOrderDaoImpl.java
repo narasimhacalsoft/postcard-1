@@ -1,8 +1,6 @@
 package com.postcard.dao.impl;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
+import java.math.BigInteger;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
@@ -10,12 +8,10 @@ import java.sql.Statement;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.core.io.ClassPathResource;
 import org.springframework.jdbc.core.PreparedStatementCreator;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
-import org.springframework.util.ResourceUtils;
 
 import com.google.gson.Gson;
 import com.postcard.dao.BaseDao;
@@ -49,7 +45,7 @@ public class PostcardOrderDaoImpl extends BaseDao implements PostcardOrderDao {
 	private String updateBrandInfo;
 
 	@Override
-	public String createPostcardOrder(long imageId) {
+	public PostcardOrder createPostcardOrder(long imageId) { 
 		
 		KeyHolder holder = new GeneratedKeyHolder();
 		try {
@@ -62,12 +58,17 @@ public class PostcardOrderDaoImpl extends BaseDao implements PostcardOrderDao {
 					ps.setLong(1, imageId);
 					return ps;
 				}
-			}, holder);
-		} catch (Exception e) {
-			return e.getMessage();
+			}, holder);		
+		PostcardOrder postcardOrder = new PostcardOrder();
+		postcardOrder.setImageId((int) imageId);
+		postcardOrder.setOrderId(((BigInteger) holder.getKey()).intValue());
+		return postcardOrder;
 		}
-		String postcardOrderId = holder.getKey().toString();
-		return postcardOrderId;
+		catch (Exception e) {
+			System.out.println("sdgsgg"+e);
+			return null;
+		}
+		
 	}
 
 	@Override

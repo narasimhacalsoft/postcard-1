@@ -66,7 +66,7 @@ public class ImageController {
 	@ApiOperation(value = "Gets the static images for selecting.", tags = {
 			"Image API" }, authorizations = { @Authorization(value="jwtToken") })
 	@ApiResponses({ @ApiResponse(code = 200, message = "Getall Image") })
-	public ResponseEntity<?> campaigns() {
+	public ResponseEntity<?> getAllImage() {
 		try {
 			List<Image> images= imageService.findallImage();
 			return ResponseEntity.ok(images);

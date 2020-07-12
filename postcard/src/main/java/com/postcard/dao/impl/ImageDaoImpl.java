@@ -42,8 +42,10 @@ public class ImageDaoImpl extends BaseDao implements ImageDao {
             obj.setImageType("FrontImage");
             obj.setImageId(rs.getInt("imageId"));
             Blob blob = rs.getBlob("image");
+            if(blob!= null && blob.length() > 0) {
             byte[] bytes = blob.getBytes(1, (int) blob.length());
             obj.setImage(bytes);
+            }
             return obj;
             });
             return objects;
@@ -51,13 +53,13 @@ public class ImageDaoImpl extends BaseDao implements ImageDao {
 	
 	@Override
 	public void deleteImage(Image image) {
-		update(deletePostcardQuery, 1000);
+		update(deletePostcardQuery, image.getImageId());
     }
         
     
 	@Override
 	public Image findOne(Long imageId) {
-		Image image =  queryForObject(findOnePostcardQuery, Image.class,1000);
+		Image image =  queryForObject(findOnePostcardQuery, Image.class,imageId);
         return image;
 	}
 
