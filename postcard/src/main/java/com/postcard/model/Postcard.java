@@ -1,6 +1,7 @@
 package com.postcard.model;
 
 import java.io.Serializable;
+import java.sql.Timestamp;
 
 import lombok.Data;
 
@@ -16,5 +17,9 @@ public class Postcard implements Serializable{
     private String response;
     private Integer attempts;
     private String cardStatus;
+    private Timestamp createdDate;
+    private String createdBy;
+    private Timestamp updatedDate;
+    private String updatedBy;
     
 }

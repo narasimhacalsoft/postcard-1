@@ -5,8 +5,10 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.Date;
 import java.util.List;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.jdbc.core.PreparedStatementCreator;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
@@ -19,6 +21,7 @@ import com.postcard.dao.PostcardOrderDao;
 import com.postcard.model.PostcardOrder;
 import com.postcard.model.UpdateBrandRequest;
 import com.postcard.model.UpdateSenderRequest;
+import com.postcard.util.SwissUtils;
 
 @Repository
 public class PostcardOrderDaoImpl extends BaseDao implements PostcardOrderDao {
@@ -43,6 +46,10 @@ public class PostcardOrderDaoImpl extends BaseDao implements PostcardOrderDao {
 
 	@Value("${updateBrandInfo}")
 	private String updateBrandInfo;
+	
+	@Autowired
+	SwissUtils swissUtils;
+	
 
 	@Override
 	public PostcardOrder createPostcardOrder(long imageId) { 
@@ -56,6 +63,8 @@ public class PostcardOrderDaoImpl extends BaseDao implements PostcardOrderDao {
 					PreparedStatement ps = connection.prepareStatement(createPostcardOrderQuery,
 							Statement.RETURN_GENERATED_KEYS);
 					ps.setLong(1, imageId);
+					ps.setTimestamp(2, new java.sql.Timestamp(new Date().getTime()));
+					ps.setString(3, swissUtils.getUsername());
 					return ps;
 				}
 			}, holder);		
@@ -73,9 +82,11 @@ public class PostcardOrderDaoImpl extends BaseDao implements PostcardOrderDao {
 
 	@Override
 	public void updatePostcardOrder(PostcardOrder postcardOrder) {
+		postcardOrder.setUpdatedDate(new java.sql.Timestamp(new Date().getTime()));
+		postcardOrder.setUpdatedBy(swissUtils.getUsername());
 		// hardcoded for testing
 		//update(updatePostcardOrderQuery, "sender text", "sender json", "branding text", "branding json", 2000);
-		update(updatePostcardOrderQuery, postcardOrder.getSenderText(), postcardOrder.getSenderJson(), postcardOrder.getBrandingText(), postcardOrder.getBrandingJson(), postcardOrder.getImageId(), postcardOrder.getOrderId());
+		update(updatePostcardOrderQuery, postcardOrder.getSenderText(), postcardOrder.getSenderJson(), postcardOrder.getBrandingText(), postcardOrder.getBrandingJson(), postcardOrder.getImageId(),postcardOrder.getUpdatedDate(),postcardOrder.getUpdatedBy(), postcardOrder.getOrderId());
 	}
 
 	@Override
@@ -116,7 +127,9 @@ public class PostcardOrderDaoImpl extends BaseDao implements PostcardOrderDao {
 							Statement.RETURN_GENERATED_KEYS);
 					ps.setString(1, new Gson().toJson(request.getSenderAddress()));
 					ps.setString(2, request.getSenderText());
-					ps.setInt(3, request.getOrderId());
+					ps.setTimestamp(3, new java.sql.Timestamp(new Date().getTime()));
+					ps.setString(4, swissUtils.getUsername());
+					ps.setInt(5, request.getOrderId());
 					return ps;
 				}
 			}, holder);
@@ -139,7 +152,9 @@ public class PostcardOrderDaoImpl extends BaseDao implements PostcardOrderDao {
 							Statement.RETURN_GENERATED_KEYS);
 					ps.setString(1, new Gson().toJson(request.getBrandingText()));
 					ps.setString(2, request.getBrandText());
-					ps.setInt(3, request.getOrderId());
+					ps.setTimestamp(3, new java.sql.Timestamp(new Date().getTime()));
+					ps.setString(4, swissUtils.getUsername());
+					ps.setInt(5, request.getOrderId());
 					return ps;
 				}
 			}, holder);

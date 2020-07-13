@@ -26,6 +26,7 @@ import com.postcard.model.BrandingStampResponse;
 import com.postcard.model.BrandingTextResponse;
 import com.postcard.model.GetAllPostcard;
 import com.postcard.model.Image;
+import com.postcard.model.ImageResponse;
 import com.postcard.model.Postcard;
 import com.postcard.model.PostcardOrder;
 import com.postcard.model.PostcardResponse;
@@ -289,8 +290,8 @@ public class PostcardServiceImpl implements PostcardService {
 			HttpEntity<LinkedMultiValueMap<String, Object>> requestEntity = new HttpEntity<>(map, headers);
 			// RestTemplate restTemplate = new RestTemplate();
 			postCardRestTemplate.getMessageConverters().add(new ByteArrayHttpMessageConverter());
-			ResponseEntity<BrandingImageResponse> responseEntity = postCardRestTemplate.exchange(url, HttpMethod.PUT,
-					requestEntity, BrandingImageResponse.class);
+			ResponseEntity<ImageResponse> responseEntity = postCardRestTemplate.exchange(url, HttpMethod.PUT,
+					requestEntity, ImageResponse.class);
 			System.out.println(responseEntity.getBody());
 
 		} catch (Exception e) {
