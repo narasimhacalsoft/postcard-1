@@ -42,8 +42,8 @@ CREATE TABLE `postcard`.`postcard` (
   `cardStatus` varchar(45) DEFAULT NULL,
    `createdDate` datetime(6) DEFAULT NULL,
   `createdBy` varchar(500) DEFAULT NULL,
-  `UpdateddDate` datetime(6) DEFAULT NULL,
-  `UpdatedBy` varchar(500) DEFAULT NULL,
+  `updateddDate` datetime(6) DEFAULT NULL,
+  `updatedBy` varchar(500) DEFAULT NULL,
   PRIMARY KEY (`cardId`),
 CONSTRAINT order_idfk_1 FOREIGN KEY (`orderId`) REFERENCES `postcard`.`postcardorder` (`orderId`));
 
