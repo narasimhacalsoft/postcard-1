@@ -111,6 +111,10 @@ public class PostcardOrderDaoImpl extends BaseDao implements PostcardOrderDao {
 			obj.setSenderJson(rs.getString("senderJson"));
 			obj.setBrandingText(rs.getString("brandingText"));
 			obj.setBrandingJson(rs.getString("brandingJson"));
+			obj.setCreatedDate(rs.getTimestamp("createdDate"));
+			obj.setCreatedBy(rs.getString("createdBy"));
+			obj.setUpdatedDate(rs.getTimestamp("updatedDate"));
+			obj.setUpdatedBy(rs.getString("updatedBy"));
 			return obj;
 		});
 		return objects;
