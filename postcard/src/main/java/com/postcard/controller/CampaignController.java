@@ -59,10 +59,6 @@ public class CampaignController {
 	@Autowired
 	OAuth2RestTemplate postCardRestTemplate;
 
-	@GetMapping(path = "campaigns")
-	@ApiOperation(value = "Gets the actual statistic of the given campaign.", tags = {
-			"Campaign API" }, response = CampaignResponse.class, authorizations = { @Authorization(value="jwtToken") })
-	@ApiResponses({ @ApiResponse(code = 200, message = "Campaign Statistic") })
 	public ResponseEntity<?> campaigns() {
 		try {
 			String url = postcardBaseURL + campaignsEndPoint + campaignKey + statisticEndpoint;

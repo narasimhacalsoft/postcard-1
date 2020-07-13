@@ -1,16 +1,15 @@
 package com.postcard.service.impl;
 
+import java.io.InputStreamReader;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.postcard.dao.ImageDao;
-import com.postcard.dao.PostcardDao;
 import com.postcard.model.Image;
-import com.postcard.model.Postcard;
 import com.postcard.service.ImageService;
-import com.postcard.service.PostcardService;
 
 @Service
 public class ImageServiceImpl implements ImageService{
@@ -20,9 +19,9 @@ public class ImageServiceImpl implements ImageService{
     
 
 	@Override
-	public void createImage(Image image) {
-		imageDao.createImage(image);
-		
+	public String createImage(MultipartFile file, long orderId, String imageType) {
+		String imageId = imageDao.createImage(file,orderId,imageType);
+		return imageId;
 	}
 
 	@Override

@@ -9,7 +9,7 @@ public class PostcardMapper implements RowMapper<Postcard> {
 
 	public Postcard mapRow(ResultSet rs, int rowNum) throws SQLException {
 		Postcard postcard = new Postcard();
-		//postcard.setOrderId(rs.getInt("orderId"));
+		postcard.setOrderId(rs.getInt("orderId"));
 		postcard.setCardId(rs.getInt("cardId"));
 		postcard.setCardKey(rs.getString("cardKey"));
 		postcard.setRecipientJson(rs.getString("recipientJson"));
