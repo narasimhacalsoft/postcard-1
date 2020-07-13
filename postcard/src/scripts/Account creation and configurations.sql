@@ -16,17 +16,6 @@ CREATE TABLE `postcard`.`image` (
   PRIMARY KEY (`imageId`)
 ); 
 
-CREATE TABLE `postcard`.`postcardorder` (
-  `orderId` int(11) NOT NULL AUTO_INCREMENT,
-   `imageId` int(11) NOT NULL,
-  `senderJson` text DEFAULT NULL,
-  `senderText` varchar(500) DEFAULT NULL,
-  `brandingText` varchar(500) DEFAULT NULL,
-  `brandingJson` text DEFAULT NULL,
-  PRIMARY KEY (`orderId`),
-CONSTRAINT image_idfk_1 FOREIGN KEY (`imageId`) REFERENCES `postcard`.`image` (`imageId`));	
-
-
 CREATE TABLE `postcard`.`postcard` (
   `orderId` int(11) DEFAULT NULL,
   `cardId` int(11) NOT NULL AUTO_INCREMENT,
@@ -36,8 +25,28 @@ CREATE TABLE `postcard`.`postcard` (
   `submissionStatus` varchar(45) DEFAULT NULL,
   `response` varchar(45) DEFAULT NULL,
   `cardStatus` varchar(45) DEFAULT NULL,
+   `createdDate` datetime(6) DEFAULT NULL,
+  `createdBy` varchar(500) DEFAULT NULL,
+  `UpdateddDate` datetime(6) DEFAULT NULL,
+  `UpdatedBy` varchar(500) DEFAULT NULL,
   PRIMARY KEY (`cardId`),
 CONSTRAINT order_idfk_1 FOREIGN KEY (`orderId`) REFERENCES `postcard`.`postcardorder` (`orderId`));
+
+
+CREATE TABLE `postcard`.`postcardorder` (
+  `orderId` int(11) NOT NULL AUTO_INCREMENT,
+   `imageId` int(11) NOT NULL,
+  `senderJson` text DEFAULT NULL,
+  `senderText` varchar(500) DEFAULT NULL,
+  `brandingText` varchar(500) DEFAULT NULL,
+  `brandingJson` text DEFAULT NULL,
+  `createdDate` datetime(6) DEFAULT NULL,
+  `createdBy` varchar(500) DEFAULT NULL,
+  `updatedDate` datetime(6) DEFAULT NULL,
+  `updatedBy` varchar(500) DEFAULT NULL,
+  PRIMARY KEY (`orderId`),
+CONSTRAINT image_idfk_1 FOREIGN KEY (`imageId`) REFERENCES `postcard`.`image` (`imageId`));	
+
 
 
 CREATE TABLE `postcard`.`user` (
@@ -82,13 +91,9 @@ INSERT INTO `postcard`.`PROPERTIES` (`name`,`value`) VALUES ('getUserQuery','sel
 INSERT INTO `postcard`.`PROPERTIES` (`name`,`value`) VALUES ('jwt.secret','AltenCalsoftLabs');
 INSERT INTO `postcard`.`PROPERTIES` (`name`,`value`) VALUES ('updateProperty','update PROPERTIES set value=? where name =?');
 INSERT INTO `postcard`.`PROPERTIES` (`name`,`value`) VALUES ('getValidationConfiguration','select `configuration` from VALIDATION_CONFIGURATION where `key`=?');
-INSERT INTO `postcard`.`PROPERTIES` (`name`,`value`) VALUES ('createPostcardOrderQuery','insert into postcardorder(senderText,senderJson,brandingText,brandingJson) values (?,?,?,?)');
-INSERT INTO `postcard`.`PROPERTIES` (`name`,`value`) VALUES ('updatePostcardOrderQuery','update postcardorder set senderText =? ,senderJson=? ,brandingText=?,brandingJson=? where orderId = ?');
 INSERT INTO `postcard`.`PROPERTIES` (`name`,`value`) VALUES ('findOnePostcardOrderQuery','SELECT * FROM postcardorder WHERE orderId = ?');
 INSERT INTO `postcard`.`PROPERTIES` (`name`,`value`) VALUES ('findallPostcardOrderQuery','select * from postcardorder');
 INSERT INTO `postcard`.`PROPERTIES` (`name`,`value`) VALUES ('deletePostcardOrderQuery','delete from postcardorder where orderId = ?');
-INSERT INTO `postcard`.`PROPERTIES` (`name`,`value`) VALUES ('createPostcardQuery','insert into postcard(orderId,cardKey,recipientJson,submissionStatus,response,attempts,cardStatus) values (?,?,?,?,?,?,?)');
-INSERT INTO `postcard`.`PROPERTIES` (`name`,`value`) VALUES ('updatePostcardQuery','update postcard set recipientJson =? ,submissionStatus=? ,response=?,attempts=?,cardStatus=? where cardKey = ?');
 INSERT INTO `postcard`.`PROPERTIES` (`name`,`value`) VALUES ('findallPostcardQuery','select * from postcard');
 INSERT INTO `postcard`.`PROPERTIES` (`name`,`value`) VALUES ('deletePostcardQuery','delete from Postcard where cardId = ?');
 INSERT INTO `postcard`.`PROPERTIES` (`name`,`value`) VALUES ('findOnePostcardQuery','SELECT * FROM Postcard WHERE cardId = ?');
@@ -96,17 +101,20 @@ INSERT INTO `postcard`.`PROPERTIES` (`name`,`value`) VALUES ('createImageQuery',
 INSERT INTO `postcard`.`PROPERTIES` (`name`,`value`) VALUES ('findOnePostcardQuery','SELECT * FROM image WHERE imageId = ?');
 INSERT INTO `postcard`.`PROPERTIES` (`name`,`value`) VALUES ('findallImageQuery','select * from image');
 INSERT INTO `postcard`.`PROPERTIES` (`name`,`value`) VALUES ('deletePostcardQuery','delete from image where imageId = ?');
-INSERT INTO `postcard`.`PROPERTIES` (`name`,`value`) VALUES ('createPostcardForRecipientAddressQuery','insert into postcard(orderId,recipientJson,submissionStatus) values (?,?,?)');
-INSERT INTO `postcard`.`PROPERTIES` (`name`,`value`) VALUES ('updateSenderAddressInfo','update postcardorder set senderJson=?,senderText=? where orderId=?');
-INSERT INTO `postcard`.`PROPERTIES` (`name`,`value`) VALUES ('updateBrandInfo','update postcardorder set brandingJson=?,brandingText=? where orderId=?');
 INSERT INTO `postcard`.`PROPERTIES` (`name`,`value`) VALUES ('management.endpoints.web.exposure.include','*');
 INSERT INTO `postcard`.`PROPERTIES` (`name`,`value`) VALUES ('management.endpoint.health','true');
 INSERT INTO `postcard`.`PROPERTIES` (`name`,`value`) VALUES ('management.endpoint.info','true');
 INSERT INTO `postcard`.`PROPERTIES` (`name`,`value`) VALUES ('management.endpoint.restart.enabled','true');
 INSERT INTO `postcard`.`PROPERTIES` (`name`,`value`) VALUES ('findallPostcardByOrderidQuery','SELECT * FROM Postcard WHERE orderId = ?');
-
 insert into `postcard`.`user`(`userName`,`password`,`role`)values('alten','$2a$10$ixlPY3AAd4ty1l6E2IsQ9OFZi2ba9ZQE0bP7RFcGIWNhyFrrT3YUi','ROLE_USER');
 insert into `postcard`.`user`(`userName`,`password`,`role`)values('admin','$2a$10$ixlPY3AAd4ty1l6E2IsQ9OFZi2ba9ZQE0bP7RFcGIWNhyFrrT3YUi','ROLE_ADMIN');
+INSERT INTO `postcard`.`PROPERTIES` (`name`,`value`) VALUES ('createPostcardOrderQuery','insert into postcardorder(imageId,createdDate,createdBy) values (?,?,?)');
+INSERT INTO `postcard`.`PROPERTIES` (`name`,`value`) VALUES ('updatePostcardOrderQuery','update postcardorder set senderText =? ,senderJson=? ,brandingText=?,brandingJson=?, imageId=?,updatedDate=?,updatedBy=? where orderId = ?');
+INSERT INTO `postcard`.`PROPERTIES` (`name`,`value`) VALUES ('updateSenderAddressInfo','update postcardorder set senderJson=?,senderText=?,updatedDate=?,updatedBy=? where orderId=?');
+INSERT INTO `postcard`.`PROPERTIES` (`name`,`value`) VALUES ('updateBrandInfo','update postcardorder set brandingJson=?,brandingText=?,updatedDate=?,updatedBy=? where orderId=?');
+INSERT INTO `postcard`.`PROPERTIES` (`name`,`value`) VALUES ('createPostcardForRecipientAddressQuery','insert into postcard(orderId,recipientJson,submissionStatus,createdDate,createdBy) values (?,?,?,?,?)');
+INSERT INTO `postcard`.`PROPERTIES` (`name`,`value`) VALUES ('createPostcardQuery','insert into postcard(orderId,cardKey,recipientJson,submissionStatus,response,attempts,cardStatus,,createdDate,createdBy) values (?,?,?,?,?,?,?,?,?)');
+INSERT INTO `postcard`.`PROPERTIES` (`name`,`value`) VALUES ('updatePostcardQuery','update postcard set recipientJson =? ,submissionStatus=? ,response=?,attempts=?,cardStatus=?,updatedDate=?,updatedBy=? where cardKey = ?');
 
 insert into `postcard`.`VALIDATION_CONFIGURATION`(`key`,`configuration`)values('recipientAddress','{"title":{"validations":[{"type":"MANDATORY","message":"Title is mandatory"},{"type":"MAX_LENGTH","value":30,"message":"Title maximum length allowed is 30"}]},"lastname":{"validations":[{"type":"MANDATORY","message":"Last name is mandatory"},{"type":"MAX_LENGTH","value":75,"message":"Last name maximum length allowed is 75"}]},"firstname":{"validations":[{"type":"MANDATORY","message":"First name is mandatory"},{"type":"MAX_LENGTH","value":75,"message":"First name maximum length allowed is 75"}]},"company":{"validations":[{"type":"MANDATORY","message":"Company name is mandatory"},{"type":"MAX_LENGTH","value":100,"message":"Company name maximum length allowed is 100"}]},
 "street":{"validations":[{"type":"NOT MANDATORY","message":"street is not mandatory"},{"type":"MAX_LENGTH","value":60,"message":"Street maximum length allowed is 60"}]},

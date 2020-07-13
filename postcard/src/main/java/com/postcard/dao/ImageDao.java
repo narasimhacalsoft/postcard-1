@@ -1,6 +1,5 @@
 package com.postcard.dao;
 
-import java.io.InputStreamReader;
 import java.util.List;
 
 import org.springframework.web.multipart.MultipartFile;
