@@ -14,6 +14,7 @@ import org.springframework.jdbc.core.PreparedStatementCreator;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
+import org.springframework.util.CollectionUtils;
 
 import com.google.gson.Gson;
 import com.postcard.dao.BaseDao;
@@ -154,10 +155,14 @@ public class PostcardDaoImpl extends BaseDao implements PostcardDao {
 		List<PostcardOrder> postcardOrders = findallPostcardOrder();
 		for (PostcardOrder postcardOrder : postcardOrders) {
 			GetAllPostcard postcard = new GetAllPostcard();
-			postcard.setOrderId(postcardOrder.getOrderId());
-			postcard.setPostcards(findPostcardByOrderId(Long.valueOf(postcardOrder.getOrderId())));
-			postcard.setPostcardOrder(postcardOrder);
-			allPostcards.add(postcard);
+			List<Postcard> listPostcard = findPostcardByOrderId(Long.valueOf(postcardOrder.getOrderId()));
+			if (!CollectionUtils.isEmpty(listPostcard)) {
+				postcard.setOrderId(postcardOrder.getOrderId());
+				postcard.setPostcards(findPostcardByOrderId(Long.valueOf(postcardOrder.getOrderId())));
+				postcard.setPostcardOrder(postcardOrder);
+				allPostcards.add(postcard);
+			}
+
 		}
 
 		return allPostcards;
