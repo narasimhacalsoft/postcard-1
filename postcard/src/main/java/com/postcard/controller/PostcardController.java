@@ -259,11 +259,11 @@ public class PostcardController {
 	@ApiOperation(value = "Submit the Postcard order", tags = { "Postcard API" }, authorizations = {
 			@Authorization(value = "jwtToken") })
 	@ApiResponses({ @ApiResponse(code = 200, message = "Postcard submitted Successfully") })
-	public ResponseEntity<?> createPostcardOrder(@RequestParam(value = "orderId", required = true) Long orderId) {
+	public ResponseEntity<?> createPostcardOrder(@RequestParam(value = "orderId", required = true) Long orderId, @RequestParam(value = "cardKey", required = true) String cardKey) {
 		try {
 			// create a post card
 
-			return ResponseEntity.ok(postcardService.submitOrder(postCardRestTemplate, orderId));
+			return ResponseEntity.ok(postcardService.submitOrder(postCardRestTemplate, orderId, cardKey));
 		} catch (Exception e) {
 			return ResponseEntity.badRequest().body(e.getMessage());
 		}

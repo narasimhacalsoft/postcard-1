@@ -8,7 +8,7 @@ import com.postcard.model.UpdateSenderRequest;
 
 public interface PostcardOrderService {
     
-	PostcardOrder createPostcardOrder(final long imageId);
+	PostcardOrder createPostcardOrder();
     
     void updatePostcardOrder(final PostcardOrder order);
     

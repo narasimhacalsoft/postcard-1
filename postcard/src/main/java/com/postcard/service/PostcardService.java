@@ -15,25 +15,11 @@ import com.postcard.model.SubmitOrderResponse;
 
 public interface PostcardService {
     
-    Long createPostcard(final Postcard postcard);
-    
-    Long updatePostcard(final Postcard postcard);
-    
-    List<Postcard> findallPostcard();
-    
-    List<Postcard> findallPostcardByOrderId(long orderId);
-    
-    Postcard findOne(Long card_id);
-    
-    void deletePostcard(final Postcard postcard);
-    
     SaveRecipientResponse saveRecipientAddress(SaveRecipientRequest request) throws ServiceException;    
 
     List<GetAllPostcard> getAllPostcards();
 
-    PostcardOrder submitOrder(OAuth2RestTemplate postCardRestTemplate, long orderId ) throws ServiceException;
-    
-    void updatePostcardkey(final Postcard postcard);
+    PostcardOrder submitOrder(OAuth2RestTemplate postCardRestTemplate, long orderId, String cardKey ) throws ServiceException;
     
     void updateRecipient(OAuth2RestTemplate postCardRestTemplate, String postcardKey, Postcard postcard);
     
@@ -49,9 +35,9 @@ public interface PostcardService {
     
     void updateBrandingImage(OAuth2RestTemplate postCardRestTemplate, String postcardKey, Postcard postcard);
 
-    void approvePostcard(OAuth2RestTemplate postCardRestTemplate, String postcardKey, Postcard postcard);
+    ResponseEntity<?> approvePostcard(OAuth2RestTemplate postCardRestTemplate, Postcard postcard);
     
-    ResponseEntity<?> getPostcardState(OAuth2RestTemplate postCardRestTemplate, String postcardKey, PostcardOrder postcardOrder);
+    ResponseEntity<?> getPostcardState(OAuth2RestTemplate postCardRestTemplate, Postcard postcard);
     
 
 }

@@ -77,15 +77,15 @@ public class ImageController {
 		}
 	}
 	
-	@PostMapping(path = "uploadStamp", produces = MediaType.APPLICATION_JSON_VALUE)
+	@PostMapping(path = "uploadImage", produces = MediaType.APPLICATION_JSON_VALUE)
 	@ApiOperation(value = "Uploads stamp for the postcard", tags = {
 			"Image API" }, authorizations = { @Authorization(value="jwtToken") })
-	@ApiResponses({ @ApiResponse(code = 200, message = "Stamp Uploaded") })
-	public ResponseEntity<?> uploadStamp(@RequestParam("file") MultipartFile file, @RequestParam("orderId") long orderId) {
+	@ApiResponses({ @ApiResponse(code = 200, message = "Image Uploaded") })
+	public ResponseEntity<?> uploadStamp(@RequestParam("file") MultipartFile file, @RequestParam("orderId") long orderId, @RequestParam("imageType") String imageType) {
 		try {
 			Image image = new Image();
 			image.setImage(file.getBytes());
-			String imageId = imageService.createImage(file,orderId, "stamp");
+			String imageId = imageService.createImage(file,orderId, imageType);
 			return ResponseEntity.ok(imageId);
 		} catch (Exception e) {
 			System.out.println(e);

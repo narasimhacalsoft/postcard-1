@@ -16,5 +16,6 @@ public class PostcardOrder {
     private String createdBy;
     private Timestamp updatedDate;
     private String updatedBy;
+    private String orderStatus;
     
 }

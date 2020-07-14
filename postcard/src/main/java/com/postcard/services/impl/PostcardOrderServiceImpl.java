@@ -21,8 +21,8 @@ public class PostcardOrderServiceImpl implements PostcardOrderService{
     PostcardOrderDao postcardOrderDao;
     
     @Override
-    public PostcardOrder createPostcardOrder(long imageId) {
-    	PostcardOrder postcardOrder = orderDao.createPostcardOrder(imageId);
+    public PostcardOrder createPostcardOrder() {
+    	PostcardOrder postcardOrder = orderDao.createPostcardOrder();
         return postcardOrder;
     }
     

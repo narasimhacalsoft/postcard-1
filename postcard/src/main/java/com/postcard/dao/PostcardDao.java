@@ -13,13 +13,15 @@ public interface PostcardDao {
     
     void createPostcard(final Postcard postcard);
     
-    void updatePostcard(final Postcard postcard);
+    void updatePostcardState(final Postcard postcard);
+    
+    void updatePostcardApproval(final Postcard postcard);
     
     void updatePostcardkey(final Postcard postcard);
     
     List<Postcard> findallPostcard();
     
-    Postcard findOne(Long card_id);
+    Postcard findOneByCardKey(String cardKey);
     
     void deletePostcard(final Postcard postcard);
     

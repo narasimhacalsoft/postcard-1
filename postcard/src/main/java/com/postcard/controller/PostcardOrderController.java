@@ -56,9 +56,9 @@ public class PostcardOrderController {
 	@ApiOperation(value = "Create Postcard Order", tags = { "PostcardOrder API" }, authorizations = {
 			@Authorization(value = "jwtToken") })
 	@ApiResponses({ @ApiResponse(code = 200, message = "Postcard Created Successfully") })
-	public ResponseEntity<?> createPostcardOrder(@RequestParam(value = "imageId", required = true) Long imageId) {
+	public ResponseEntity<?> createPostcardOrder() {
 		try {
-			return ResponseEntity.ok(orderService.createPostcardOrder(imageId));
+			return ResponseEntity.ok(orderService.createPostcardOrder());
 		} catch (Exception e) {
 			return ResponseEntity.badRequest().body(e.getMessage());
 		}
