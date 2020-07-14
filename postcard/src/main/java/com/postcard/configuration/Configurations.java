@@ -5,6 +5,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -33,7 +35,6 @@ import com.google.gson.Gson;
 import com.postcard.dao.PropertiesDao;
 import com.postcard.validator.MandatoryValidator;
 import com.postcard.validator.MaxlengthValidator;
-import com.postcard.validator.ValidationContext;
 import com.postcard.validator.Validator;
 
 import lombok.extern.apachecommons.CommonsLog;
@@ -150,8 +151,8 @@ public class Configurations extends WebMvcConfigurationSupport {
 
 	@Bean
 	@SuppressWarnings("unchecked")
-	public ValidationContext recipientValidationContext() {
-		ValidationContext context = new ValidationContext();
+	public Map<String, List<Validator>> recipientValidationContext() {
+		Map<String, List<Validator>> context = new ConcurrentHashMap<>();
 		try {
 			String validationConfiguration = propertiesDao.getValidationConfig("recipientAddress");
 			JSONObject json = new JSONObject(validationConfiguration);

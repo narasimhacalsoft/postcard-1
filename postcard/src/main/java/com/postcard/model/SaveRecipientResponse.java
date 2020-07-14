@@ -1,7 +1,5 @@
 package com.postcard.model;
 
-import java.util.List;
-
 import lombok.AllArgsConstructor;
 import lombok.Data;
 
@@ -10,8 +8,6 @@ import lombok.Data;
 public class SaveRecipientResponse {
 	
 	private Integer orderId;
-	private List<Postcard> postcards;
+	private Postcard postcard;
 	
-	
-
 }

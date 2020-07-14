@@ -27,11 +27,11 @@ public interface PostcardDao {
     
     SaveRecipientResponse saveRecipientAddress(SaveRecipientRequest request) throws ServiceException;
     
-    List<GetAllPostcard> getAllPostcards();
+    List<GetAllPostcard> getAllPostcards(String from,String to,String status);
     
     List<Postcard> findPostcardByOrderId(Long orderId);
     
-    List<PostcardOrder> findallPostcardOrder();
+	List<PostcardOrder> findallPostcardOrder(String from,String to,String status);
     
 
 }

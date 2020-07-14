@@ -18,6 +18,7 @@ import org.springframework.stereotype.Repository;
 import com.google.gson.Gson;
 import com.postcard.dao.BaseDao;
 import com.postcard.dao.PostcardOrderDao;
+import com.postcard.model.Constants;
 import com.postcard.model.PostcardOrder;
 import com.postcard.model.UpdateBrandRequest;
 import com.postcard.model.UpdateSenderRequest;
@@ -50,6 +51,9 @@ public class PostcardOrderDaoImpl extends BaseDao implements PostcardOrderDao {
 	@Autowired
 	SwissUtils swissUtils;
 	
+	@Autowired
+	Constants constants;
+	
 
 	@Override
 	public PostcardOrder createPostcardOrder() { 
@@ -62,14 +66,14 @@ public class PostcardOrderDaoImpl extends BaseDao implements PostcardOrderDao {
 				public PreparedStatement createPreparedStatement(Connection connection) throws SQLException {
 					PreparedStatement ps = connection.prepareStatement(createPostcardOrderQuery,
 							Statement.RETURN_GENERATED_KEYS);
-					ps.setString(1, "Draft");
+					ps.setString(1, Constants.DRAFT);
 					ps.setTimestamp(2, new java.sql.Timestamp(new Date().getTime()));
 					ps.setString(3, swissUtils.getUsername());
 					return ps;
 				}
 			}, holder);		
 		PostcardOrder postcardOrder = new PostcardOrder();
-		postcardOrder.setOrderStatus("Draft");;
+		postcardOrder.setOrderStatus(Constants.DRAFT);;
 		postcardOrder.setOrderId(((BigInteger) holder.getKey()).intValue());
 		return postcardOrder;
 		}
@@ -141,7 +145,7 @@ public class PostcardOrderDaoImpl extends BaseDao implements PostcardOrderDao {
 			return e.getMessage();
 		}
 
-		return "Sender information updated successfully";
+		return Constants.SENDER_SUCCESS;
 
 	}
 
@@ -166,7 +170,7 @@ public class PostcardOrderDaoImpl extends BaseDao implements PostcardOrderDao {
 			return e.getMessage();
 		}
 
-		return "Brand information updated successfully";
+		return Constants.BRAND_SUCCESS;
 
 	}
 

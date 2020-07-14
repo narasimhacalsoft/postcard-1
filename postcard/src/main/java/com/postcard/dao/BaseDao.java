@@ -36,6 +36,10 @@ public abstract class BaseDao {
 	public <T> List<T> query(String sql, Long param, RowMapper<T> rowMapper) throws DataAccessException {
 		return mainJdbcTemplate.query(sql, getPreparedStatementSetter(param), rowMapper);
 	}
+	
+	public <T> List<T> query(String sql, String from,String to,String status, RowMapper<T> rowMapper) throws DataAccessException {
+		return mainJdbcTemplate.query(sql, getPreparedStatementSetter(from,to,status), rowMapper);
+	}
 
 	public <T> List<T> query(String sql, RowMapper<T> rowMapper) throws DataAccessException {
 		return mainJdbcTemplate.query(sql, rowMapper);
@@ -59,6 +63,17 @@ public abstract class BaseDao {
 			@Override
 			public void setValues(PreparedStatement ps) throws SQLException {
 				ps.setLong(1, param);
+			}
+		};
+	}
+	
+	private PreparedStatementSetter getPreparedStatementSetter(String from,String to,String status) {
+		return new PreparedStatementSetter() {
+			@Override
+			public void setValues(PreparedStatement ps) throws SQLException {
+				ps.setString(1, from);
+				ps.setString(2, to);
+				ps.setString(3, status);
 			}
 		};
 	}

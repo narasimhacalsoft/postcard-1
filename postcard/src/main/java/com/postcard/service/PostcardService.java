@@ -11,13 +11,12 @@ import com.postcard.model.Postcard;
 import com.postcard.model.PostcardOrder;
 import com.postcard.model.SaveRecipientRequest;
 import com.postcard.model.SaveRecipientResponse;
-import com.postcard.model.SubmitOrderResponse;
 
 public interface PostcardService {
     
     SaveRecipientResponse saveRecipientAddress(SaveRecipientRequest request) throws ServiceException;    
 
-    List<GetAllPostcard> getAllPostcards();
+    List<GetAllPostcard> getAllPostcards(String from,String to,String status);
 
     PostcardOrder submitOrder(OAuth2RestTemplate postCardRestTemplate, long orderId, String cardKey ) throws ServiceException;
     

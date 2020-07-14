@@ -5,6 +5,7 @@ import java.io.ByteArrayInputStream;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,6 +22,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.google.gson.Gson;
+import com.postcard.model.Error;
+import com.postcard.model.PostcardRequest;
 import com.postcard.model.PreviewBackResponse;
 import com.postcard.model.PreviewFrontResponse;
 import com.postcard.model.RecipientAddress;
@@ -28,7 +31,6 @@ import com.postcard.model.SaveRecipientRequest;
 import com.postcard.service.ImageService;
 import com.postcard.service.PostcardOrderService;
 import com.postcard.service.PostcardService;
-import com.postcard.validator.ValidationContext;
 import com.postcard.validator.Validator;
 
 import io.swagger.annotations.Api;
@@ -118,7 +120,7 @@ public class PostcardController {
 	OAuth2RestTemplate postCardRestTemplate;
 
 	@Autowired
-	ValidationContext recipientValidationContext;
+	Map<String, List<Validator>> recipientValidationContext;
 
 	// @GetMapping(path = "configs")
 	/*
@@ -164,15 +166,18 @@ public class PostcardController {
 
 				data = line.split(delimiter);
 				json = new JSONObject();
-				List<String> errors = new ArrayList<>();
+				List<JSONObject> errors = new ArrayList<>();
 				for (int i = 0; i < data.length; i++) {
 					String field = header[i];
 					String value = data[i];
 					json.put(field, data[i]);
-					List<Validator> validators = recipientValidationContext.getValidators(field);
+					List<Validator> validators = recipientValidationContext.get(field);
 					for (Validator validator : validators) {
 						if (!validator.isValid(value)) {
-							errors.add(validator.errorMessage());
+							JSONObject error= new JSONObject();
+							error.put("code", validator.errorMessage().getCode());
+							error.put("description", validator.errorMessage().getDescription());
+							errors.add(error);
 							break;
 						}
 					}
@@ -189,7 +194,7 @@ public class PostcardController {
 		}
 	}
 
-	@PostMapping(path = "saveRecipients")
+	@PostMapping(path = "createRecipinet")
 	@ApiOperation(value = "Save Receipient Address Details", tags = { "Postcard API" }, authorizations = {
 			@Authorization(value = "jwtToken") })
 	@ApiResponses({ @ApiResponse(code = 200, message = "Recipient details saved Successfully") })
@@ -246,9 +251,9 @@ public class PostcardController {
 	@ApiOperation(value = "Get all the Postcard and PostcardOrder Details", tags = {
 			"Postcard API" }, authorizations = { @Authorization(value = "jwtToken") })
 	@ApiResponses({ @ApiResponse(code = 200, message = "Get the PostCard and PostcardOrder details") })
-	public ResponseEntity<?> getAllPostcards() {
+	public ResponseEntity<?> getAllPostcards(@RequestParam(value = "from", required = true) String from,@RequestParam(value = "to", required = true) String to,@RequestParam(value = "status", required = true) String status) {
 		try {
-			return ResponseEntity.ok(postcardService.getAllPostcards());
+			return ResponseEntity.ok(postcardService.getAllPostcards(from,to,status));
 		} catch (Exception e) {
 			return ResponseEntity.badRequest().body(e.getMessage());
 		}

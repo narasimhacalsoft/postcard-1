@@ -7,14 +7,16 @@ import lombok.Data;
 @Data
 public class PostcardRequest implements Serializable{
     
-    /**
+	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -839790461200813306L;
+	private static final long serialVersionUID = 1L;
+	
+//	private Integer orderId;
 
 	private SenderAddress senderAddress;
     
-    private RecipientAddressRequest recipientAddress;
+    private RecipientAddress recipientAddress;
     
     private String senderText;
     

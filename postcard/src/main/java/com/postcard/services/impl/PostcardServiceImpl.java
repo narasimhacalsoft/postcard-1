@@ -18,12 +18,14 @@ import org.springframework.security.oauth2.client.OAuth2RestTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.LinkedMultiValueMap;
+import org.springframework.util.StringUtils;
 
 import com.google.gson.Gson;
 import com.postcard.dao.PostcardDao;
 import com.postcard.dao.PostcardOrderDao;
 import com.postcard.exception.ServiceException;
 import com.postcard.model.ApprovalResponse;
+import com.postcard.model.Branding;
 import com.postcard.model.BrandingImageResponse;
 import com.postcard.model.BrandingStampResponse;
 import com.postcard.model.BrandingTextResponse;
@@ -32,11 +34,12 @@ import com.postcard.model.Image;
 import com.postcard.model.ImageResponse;
 import com.postcard.model.Postcard;
 import com.postcard.model.PostcardOrder;
+import com.postcard.model.PostcardRequest;
 import com.postcard.model.PostcardResponse;
-import com.postcard.model.RecipientAddress;
 import com.postcard.model.RecipientResponse;
 import com.postcard.model.SaveRecipientRequest;
 import com.postcard.model.SaveRecipientResponse;
+import com.postcard.model.SenderAddress;
 import com.postcard.model.SenderResponse;
 import com.postcard.model.SenderTextResponse;
 import com.postcard.model.StateResponse;
@@ -100,18 +103,54 @@ public class PostcardServiceImpl implements PostcardService {
 
 	@Autowired
 	PostcardOrderService postcardOrderService;
+	
+	@Autowired
+	OAuth2RestTemplate postCardRestTemplate;
 
 	@Autowired
 	ImageService imageService;
+	
+
 
 	@Override
 	public SaveRecipientResponse saveRecipientAddress(SaveRecipientRequest request) throws ServiceException {
-		for (RecipientAddress address : request.getRecipients()) {
-			if (!CollectionUtils.isEmpty(address.getErrors())) {
+			if (!CollectionUtils.isEmpty(request.getRecipient().getErrors())) {
 				throw new ServiceException("Invalid Recipient Address");
-			}
+			
 		}
-		return postcardDao.saveRecipientAddress(request);
+			
+			SaveRecipientResponse response=postcardDao.saveRecipientAddress(request);
+			
+			PostcardOrder order = postcardOrderDao.findOne(Long.valueOf(response.getOrderId()));
+			
+			PostcardRequest postRequest = new PostcardRequest();
+			postRequest.setRecipientAddress(request.getRecipient());
+
+			if (!StringUtils.isEmpty(order.getSenderJson())) {
+				SenderAddress sendAddress = new Gson().fromJson(order.getSenderJson(), SenderAddress.class);
+				postRequest.setSenderAddress(sendAddress);
+				
+				
+			}
+
+			if (!StringUtils.isEmpty(order.getBrandingJson())) {
+				Branding brand =new Gson().fromJson(order.getBrandingJson(), Branding.class);
+				postRequest.setBranding(brand);
+			}
+			
+			
+			HttpHeaders headers = new HttpHeaders();
+			// Create post card
+			String url = postcardBaseURL + createPostcardEndPoint + campaignKey;
+			headers.setContentType(MediaType.APPLICATION_JSON);
+			HttpEntity<String> httpRequest = new HttpEntity<String>(new Gson().toJson(postRequest), headers);
+			ResponseEntity<PostcardResponse> responseEntity = postCardRestTemplate.postForEntity(url, httpRequest,
+					PostcardResponse.class);
+			// update postcard order wiht card key
+			response.getPostcard().setCardKey(responseEntity.getBody().getCardKey());
+			postcardDao.updatePostcardkey(response.getPostcard());
+		 
+		return response;
 	}
 
 	@Override
@@ -144,8 +183,8 @@ public class PostcardServiceImpl implements PostcardService {
 	}
 
 	@Override
-	public List<GetAllPostcard> getAllPostcards() {
-		return postcardDao.getAllPostcards();
+	public List<GetAllPostcard> getAllPostcards(String from,String to,String status) {
+		return postcardDao.getAllPostcards(from,to,status);
 	}
 
 	@Override

@@ -1,12 +1,15 @@
 package com.postcard.model;
 
 import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.List;
+
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonInclude.Include;
 
 import lombok.Data;
 
 @Data
+
 public class RecipientAddress implements Serializable{
 	
     /**
@@ -23,6 +26,7 @@ public class RecipientAddress implements Serializable{
 	private String city; 	
 	private String country;	
 	private String poBox;
-	private List<String> errors = new ArrayList<>();
+	@JsonInclude(Include.NON_NULL)
+	private List<Error> errors=null;
 
 }

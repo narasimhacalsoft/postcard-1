@@ -10,11 +10,17 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.jdbc.core.PreparedStatementCreator;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
+import org.springframework.security.oauth2.client.OAuth2RestTemplate;
 import org.springframework.stereotype.Repository;
 import org.springframework.util.CollectionUtils;
+import org.springframework.util.StringUtils;
 
 import com.google.gson.Gson;
 import com.postcard.dao.BaseDao;
@@ -24,9 +30,14 @@ import com.postcard.model.GetAllPostcard;
 import com.postcard.model.Postcard;
 import com.postcard.model.PostcardMapper;
 import com.postcard.model.PostcardOrder;
-import com.postcard.model.RecipientAddress;
+import com.postcard.model.PostcardOrderMapper;
+import com.postcard.model.PostcardRequest;
+import com.postcard.model.PostcardResponse;
 import com.postcard.model.SaveRecipientRequest;
 import com.postcard.model.SaveRecipientResponse;
+import com.postcard.model.UpdateBrandRequest;
+import com.postcard.model.UpdateSenderRequest;
+import com.postcard.service.PostcardOrderService;
 import com.postcard.util.SwissUtils;
 
 @Repository
@@ -55,10 +66,28 @@ public class PostcardDaoImpl extends BaseDao implements PostcardDao {
 
 	@Value("${findallPostcardOrderQuery}")
 	private String findallPostcardOrderQuery;
+	
+	@Value("${selectGetallPostcards}")
+	private String selectGetallPostcards;
+	
+	@Value("${postcardBaseURL}")
+	String postcardBaseURL;
+	
+	@Value("${campaignKey}")
+	String campaignKey;
+
+	@Value("${createPostcardEndPoint}")
+	String createPostcardEndPoint;
 
 	@Autowired
 	SwissUtils swissUtils;
-
+	
+	@Autowired
+	PostcardOrderService orderService;
+	
+	@Autowired
+	OAuth2RestTemplate postCardRestTemplate;
+	
 	@Override
 	public void createPostcard(Postcard postcard) {
 		postcard.setUpdatedDate(new java.sql.Timestamp(new Date().getTime()));
@@ -120,39 +149,33 @@ public class PostcardDaoImpl extends BaseDao implements PostcardDao {
 
 	@Override
 	public SaveRecipientResponse saveRecipientAddress(SaveRecipientRequest request) throws ServiceException {
-		List<Postcard> postcards = new ArrayList<>();
+		Postcard postcard = new Postcard();
 		KeyHolder holder = new GeneratedKeyHolder();
-		for (RecipientAddress address : request.getRecipients()) {
-			getMainJdbcTemplate().update(new PreparedStatementCreator() {
-				@Override
-				public PreparedStatement createPreparedStatement(Connection connection) throws SQLException {
-					PreparedStatement ps = connection.prepareStatement(createPostcardForRecipientAddressQuery,
-							Statement.RETURN_GENERATED_KEYS);
-					ps.setInt(1, request.getOrderId());
-					ps.setString(2, new Gson().toJson(address));
-					ps.setString(3, "DRAFT");
-					ps.setTimestamp(4, new java.sql.Timestamp(new Date().getTime()));
-					ps.setString(5, swissUtils.getUsername());
-					return ps;
-				}
-			}, holder);
+		getMainJdbcTemplate().update(new PreparedStatementCreator() {
 
-			int cardId = holder.getKey().intValue();
-			Postcard postcard = new Postcard();
-			postcard.setCardId(cardId);
-			postcard.setSubmissionStatus("DRAFT");
-			postcard.setRecipientJson(new Gson().toJson(address));
-			postcards.add(postcard);
+			@Override
+			public PreparedStatement createPreparedStatement(Connection connection) throws SQLException {
+				PreparedStatement ps = connection.prepareStatement(createPostcardForRecipientAddressQuery,
+						Statement.RETURN_GENERATED_KEYS);
+				ps.setInt(1, request.getOrderId());
+				ps.setString(2, new Gson().toJson(request.getRecipient()));
+				ps.setString(3, "DRAFT");
+				ps.setTimestamp(4, new java.sql.Timestamp(new Date().getTime()));
+				ps.setString(5, swissUtils.getUsername());
+				return ps;
+			}
+		}, holder);
 
-		}
-		SaveRecipientResponse response = new SaveRecipientResponse(request.getOrderId(), postcards);
+		int cardId = holder.getKey().intValue();
+		postcard.setCardId(cardId);
+		SaveRecipientResponse response = new SaveRecipientResponse(request.getOrderId(), postcard);
 		return response;
 	}
 
 	@Override
-	public List<GetAllPostcard> getAllPostcards() {
+	public List<GetAllPostcard> getAllPostcards(String from,String to,String status) {
 		List<GetAllPostcard> allPostcards = new ArrayList<>();
-		List<PostcardOrder> postcardOrders = findallPostcardOrder();
+		List<PostcardOrder> postcardOrders = findallPostcardOrder(from,to,status);
 		for (PostcardOrder postcardOrder : postcardOrders) {
 			GetAllPostcard postcard = new GetAllPostcard();
 			List<Postcard> listPostcard = findPostcardByOrderId(Long.valueOf(postcardOrder.getOrderId()));
@@ -174,21 +197,8 @@ public class PostcardDaoImpl extends BaseDao implements PostcardDao {
 	}
 
 	@Override
-	public List<PostcardOrder> findallPostcardOrder() {
-		List<PostcardOrder> objects = query(findallPostcardOrderQuery, (rs, rowNum) -> {
-			PostcardOrder obj = new PostcardOrder();
-			obj.setOrderId(rs.getInt("orderId"));
-			obj.setSenderText(rs.getString("senderText"));
-			obj.setSenderJson(rs.getString("senderJson"));
-			obj.setBrandingText(rs.getString("brandingText"));
-			obj.setBrandingJson(rs.getString("brandingJson"));
-			obj.setCreatedDate(rs.getTimestamp("createdDate"));
-			obj.setCreatedBy(rs.getString("createdBy"));
-			obj.setUpdatedDate(rs.getTimestamp("updatedDate"));
-			obj.setUpdatedBy(rs.getString("updatedBy"));
-			return obj;
-		});
-		return objects;
+	public List<PostcardOrder> findallPostcardOrder(String from,String to,String status) {
+		return query(selectGetallPostcards, from, to, status, new PostcardOrderMapper());
 	}
 
 }
