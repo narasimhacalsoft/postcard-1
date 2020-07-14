@@ -51,10 +51,6 @@ public class PostcardOrderDaoImpl extends BaseDao implements PostcardOrderDao {
 	@Autowired
 	SwissUtils swissUtils;
 	
-	@Autowired
-	Constants constants;
-	
-
 	@Override
 	public PostcardOrder createPostcardOrder() { 
 		
@@ -145,7 +141,7 @@ public class PostcardOrderDaoImpl extends BaseDao implements PostcardOrderDao {
 			return e.getMessage();
 		}
 
-		return Constants.SENDER_SUCCESS;
+		return "Sender information updated successfully";
 
 	}
 
@@ -170,7 +166,7 @@ public class PostcardOrderDaoImpl extends BaseDao implements PostcardOrderDao {
 			return e.getMessage();
 		}
 
-		return Constants.BRAND_SUCCESS;
+		return "Brand information updated successfully";
 
 	}
 
