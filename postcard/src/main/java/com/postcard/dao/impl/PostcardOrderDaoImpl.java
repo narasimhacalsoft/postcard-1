@@ -52,7 +52,7 @@ public class PostcardOrderDaoImpl extends BaseDao implements PostcardOrderDao {
 	
 
 	@Override
-	public PostcardOrder createPostcardOrder(long imageId) { 
+	public PostcardOrder createPostcardOrder() { 
 		
 		KeyHolder holder = new GeneratedKeyHolder();
 		try {
@@ -62,14 +62,14 @@ public class PostcardOrderDaoImpl extends BaseDao implements PostcardOrderDao {
 				public PreparedStatement createPreparedStatement(Connection connection) throws SQLException {
 					PreparedStatement ps = connection.prepareStatement(createPostcardOrderQuery,
 							Statement.RETURN_GENERATED_KEYS);
-					ps.setLong(1, imageId);
+					ps.setString(1, "Draft");
 					ps.setTimestamp(2, new java.sql.Timestamp(new Date().getTime()));
 					ps.setString(3, swissUtils.getUsername());
 					return ps;
 				}
 			}, holder);		
 		PostcardOrder postcardOrder = new PostcardOrder();
-		postcardOrder.setImageId((int) imageId);
+		postcardOrder.setOrderStatus("Draft");;
 		postcardOrder.setOrderId(((BigInteger) holder.getKey()).intValue());
 		return postcardOrder;
 		}

@@ -18,8 +18,9 @@ CREATE TABLE `postcard`.`image` (
 
 CREATE TABLE `postcard`.`postcardorder` (
   `orderId` int(11) NOT NULL AUTO_INCREMENT,
-   `imageId` int(11) NOT NULL,
+   `imageId` int(11),
   `senderJson` text DEFAULT NULL,
+  `orderStatus` varchar(45) DEFAULT NULL,
   `senderText` varchar(500) DEFAULT NULL,
   `brandingText` varchar(500) DEFAULT NULL,
   `brandingJson` text DEFAULT NULL,
@@ -106,7 +107,7 @@ INSERT INTO `postcard`.`PROPERTIES` (`name`,`value`) VALUES ('management.endpoin
 INSERT INTO `postcard`.`PROPERTIES` (`name`,`value`) VALUES ('management.endpoint.restart.enabled','true');
 INSERT INTO `postcard`.`PROPERTIES` (`name`,`value`) VALUES ('findallPostcardByOrderidQuery','SELECT * FROM Postcard WHERE orderId = ?');
 
-INSERT INTO `postcard`.`PROPERTIES` (`name`,`value`) VALUES ('createPostcardOrderQuery','insert into postcardorder(imageId,createdDate,createdBy) values (?,?,?)');
+INSERT INTO `postcard`.`PROPERTIES` (`name`,`value`) VALUES ('createPostcardOrderQuery','insert into postcardorder(orderStatus,createdDate,createdBy) values (?,?,?)');
 INSERT INTO `postcard`.`PROPERTIES` (`name`,`value`) VALUES ('updatePostcardOrderQuery','update postcardorder set senderText =? ,senderJson=? ,brandingText=?,brandingJson=?, imageId=?,updatedDate=?,updatedBy=? where orderId = ?');
 INSERT INTO `postcard`.`PROPERTIES` (`name`,`value`) VALUES ('updateSenderAddressInfo','update postcardorder set senderJson=?,senderText=?,updatedDate=?,updatedBy=? where orderId=?');
 INSERT INTO `postcard`.`PROPERTIES` (`name`,`value`) VALUES ('updateBrandInfo','update postcardorder set brandingJson=?,brandingText=?,updatedDate=?,updatedBy=? where orderId=?');
