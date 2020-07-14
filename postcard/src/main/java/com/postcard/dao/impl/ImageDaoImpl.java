@@ -29,8 +29,8 @@ public class ImageDaoImpl extends BaseDao implements ImageDao {
     @Value("${createImageQuery}")
     private String createImageQuery;
     
-    @Value("${findOnePostcardQuery}")
-    private String findOnePostcardQuery;
+    @Value("${findOneImageQuery}")
+    private String findOneImageQuery;
     
     @Value("${findallImageQuery}")
     private String findallImageQuery;
@@ -99,7 +99,7 @@ public class ImageDaoImpl extends BaseDao implements ImageDao {
     
 	@Override
 	public Image findOne(Long imageId) {
-		Image image =  queryForObject(findOnePostcardQuery, Image.class,imageId);
+		Image image =  queryForObject(findOneImageQuery, Image.class,imageId);
         return image;
 	}
 

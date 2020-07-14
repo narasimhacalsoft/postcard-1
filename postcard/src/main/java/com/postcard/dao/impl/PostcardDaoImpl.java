@@ -55,43 +55,43 @@ public class PostcardDaoImpl extends BaseDao implements PostcardDao {
 
 	@Value("${findallPostcardOrderQuery}")
 	private String findallPostcardOrderQuery;
-	
+
 	@Autowired
 	SwissUtils swissUtils;
 
 	@Override
 	public void createPostcard(Postcard postcard) {
-		// String sqlQuery = "insert into
-		// postcard(orderId,cardKey,recipientJson,submissionStatus,response,attempts,cardStatus)
-		// values (?,?,?,?,?,?,?,?)";
-		// hardcoded for testing
-		
 		postcard.setUpdatedDate(new java.sql.Timestamp(new Date().getTime()));
 		postcard.setUpdatedBy(swissUtils.getUsername());
-		update(createPostcardQuery, 500, "card-key", "recipient", "submit status", "response", 1, "created",postcard.getCreatedDate(),postcard.getCreatedBy());
+		update(createPostcardQuery, 500, "card-key", "recipient", "submit status", "response", 1, "created",
+				postcard.getCreatedDate(), postcard.getCreatedBy());
 		// mainJdbcTemplate.update(sqlQuery, postcard.getcardId(),
 		// postcard.getcardId(),postcard.getcardKey(),postcard.getrecipientJson(),postcard.getsubmissionStatus(),postcard.getResponse(),postcard.getAttempts(),postcard.getcardStatus());
 	}
 
 	@Override
-	public void updatePostcard(Postcard postcard) {
-		// String sqlQuery = "update postcard set recipientJson =?
-		// ,submissionStatus=? ,response=?,attempts=?,cardStatus=? where cardKey
-		// = ?";
-		// hardcoded for testing
-		
+	public void updatePostcardState(Postcard postcard) {
 		postcard.setUpdatedDate(new java.sql.Timestamp(new Date().getTime()));
 		postcard.setUpdatedBy(swissUtils.getUsername());
-		update(updatePostcardQuery, "recipient", "submit status", "response", 1, "update", "card-key",postcard.getUpdatedDate(),postcard.getUpdatedBy());
-		// mainJdbcTemplate.update(sqlQuery,
-		// postcard.getrecipientJson(),postcard.getsubmissionStatus(),postcard.getResponse(),postcard.getAttempts(),postcard.getcardStatus());
+		update("update postcard set cardStatus =?,updatedDate=?,updatedBy=? where cardKey = ?", postcard.getCardStatus(), postcard.getUpdatedDate(), postcard.getUpdatedBy(),
+				postcard.getCardKey());
+	}
+	
+	@Override
+	public void updatePostcardApproval(Postcard postcard) {
+		postcard.setUpdatedDate(new java.sql.Timestamp(new Date().getTime()));
+		postcard.setUpdatedBy(swissUtils.getUsername());
+		update("update postcard set submissionStatus=? ,response=?,attempts=?, updatedDate=?, updatedBy=? where cardKey = ?", postcard.getSubmissionStatus(), postcard.getResponse(),
+				postcard.getAttempts(), postcard.getUpdatedDate(), postcard.getUpdatedBy(),
+				postcard.getCardKey());
 	}
 
 	@Override
 	public void updatePostcardkey(Postcard postcard) {
 		postcard.setUpdatedDate(new java.sql.Timestamp(new Date().getTime()));
 		postcard.setUpdatedBy(swissUtils.getUsername());
-		update("update postcard set cardKey =?,updatedDate=?,updatedBy=? where cardId = ?", postcard.getCardKey(),postcard.getUpdatedDate(),postcard.getUpdatedBy(), postcard.getCardId());
+		update("update postcard set cardKey =?,updatedDate=?,updatedBy=? where cardId = ?", postcard.getCardKey(),
+				postcard.getUpdatedDate(), postcard.getUpdatedBy(), postcard.getCardId());
 
 	}
 
@@ -101,7 +101,7 @@ public class PostcardDaoImpl extends BaseDao implements PostcardDao {
 		List<Postcard> objects = query(findallPostcardQuery, new PostcardMapper());
 		return objects;
 	}
-	
+
 	@Override
 	public void deletePostcard(Postcard postcard) {
 		// String sqlQuery = "delete from Postcard where cardId = ?";
@@ -111,9 +111,9 @@ public class PostcardDaoImpl extends BaseDao implements PostcardDao {
 	}
 
 	@Override
-	public Postcard findOne(Long cardId) {
+	public Postcard findOneByCardKey(String cardKey) {
 		// String sql = "SELECT * FROM Postcard WHERE cardId = ?";
-		Postcard postcard = queryForObject(findOnePostcardQuery, Postcard.class, cardId);
+		Postcard postcard = queryForObject(findOnePostcardQuery, Postcard.class, cardKey);
 		return postcard;
 
 	}

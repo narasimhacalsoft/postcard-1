@@ -38,7 +38,7 @@ CREATE TABLE `postcard`.`postcard` (
   `attempts` int(11) DEFAULT NULL,
   `recipientJson` text DEFAULT NULL,
   `submissionStatus` varchar(45) DEFAULT NULL,
-  `response` varchar(45) DEFAULT NULL,
+  `response` varchar(500) DEFAULT NULL,
   `cardStatus` varchar(45) DEFAULT NULL,
    `createdDate` datetime(6) DEFAULT NULL,
   `createdBy` varchar(500) DEFAULT NULL,
@@ -95,9 +95,9 @@ INSERT INTO `postcard`.`PROPERTIES` (`name`,`value`) VALUES ('findallPostcardOrd
 INSERT INTO `postcard`.`PROPERTIES` (`name`,`value`) VALUES ('deletePostcardOrderQuery','delete from postcardorder where orderId = ?');
 INSERT INTO `postcard`.`PROPERTIES` (`name`,`value`) VALUES ('findallPostcardQuery','select * from postcard');
 INSERT INTO `postcard`.`PROPERTIES` (`name`,`value`) VALUES ('deletePostcardQuery','delete from Postcard where cardId = ?');
-INSERT INTO `postcard`.`PROPERTIES` (`name`,`value`) VALUES ('findOnePostcardQuery','SELECT * FROM Postcard WHERE cardId = ?');
+INSERT INTO `postcard`.`PROPERTIES` (`name`,`value`) VALUES ('findOnePostcardQuery','SELECT * FROM Postcard WHERE cardKey = ?');
 INSERT INTO `postcard`.`PROPERTIES` (`name`,`value`) VALUES ('createImageQuery','insert into image(imageType) values (?)');
-INSERT INTO `postcard`.`PROPERTIES` (`name`,`value`) VALUES ('findOnePostcardQuery','SELECT * FROM image WHERE imageId = ?');
+INSERT INTO `postcard`.`PROPERTIES` (`name`,`value`) VALUES ('findOneImageQuery','SELECT * FROM image WHERE imageId = ?');
 INSERT INTO `postcard`.`PROPERTIES` (`name`,`value`) VALUES ('findallImageQuery','select * from image');
 INSERT INTO `postcard`.`PROPERTIES` (`name`,`value`) VALUES ('deletePostcardQuery','delete from image where imageId = ?');
 INSERT INTO `postcard`.`PROPERTIES` (`name`,`value`) VALUES ('management.endpoints.web.exposure.include','*');
