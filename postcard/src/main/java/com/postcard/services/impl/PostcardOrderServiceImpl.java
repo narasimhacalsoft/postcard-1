@@ -8,7 +8,8 @@ import org.springframework.stereotype.Service;
 import com.postcard.dao.PostcardOrderDao;
 import com.postcard.model.PostcardOrder;
 import com.postcard.model.UpdateBrandRequest;
-import com.postcard.model.UpdateSenderRequest;
+import com.postcard.model.UpdateSenderAddressRequest;
+import com.postcard.model.UpdateSenderTextRequest;
 import com.postcard.service.PostcardOrderService;
 
 @Service
@@ -49,13 +50,19 @@ public class PostcardOrderServiceImpl implements PostcardOrderService{
     }
     
     @Override
-	public String updateSenderAddress(UpdateSenderRequest request) {
+	public String updateSenderAddress(UpdateSenderAddressRequest request) {
 		return postcardOrderDao.updateSenderAddress(request);
+		
 	}
 
 	@Override
 	public String updateBrandInfo(UpdateBrandRequest request) {
 		return postcardOrderDao.updateBrandInfo(request);
+	}
+
+	@Override
+	public String updateSenderText(UpdateSenderTextRequest request) {
+		return postcardOrderDao.updateSenderText(request);
 	}
 
 

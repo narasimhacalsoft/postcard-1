@@ -18,10 +18,10 @@ import org.springframework.stereotype.Repository;
 import com.google.gson.Gson;
 import com.postcard.dao.BaseDao;
 import com.postcard.dao.PostcardOrderDao;
-import com.postcard.model.Constants;
 import com.postcard.model.PostcardOrder;
 import com.postcard.model.UpdateBrandRequest;
-import com.postcard.model.UpdateSenderRequest;
+import com.postcard.model.UpdateSenderAddressRequest;
+import com.postcard.model.UpdateSenderTextRequest;
 import com.postcard.util.SwissUtils;
 
 @Repository
@@ -44,7 +44,10 @@ public class PostcardOrderDaoImpl extends BaseDao implements PostcardOrderDao {
 
 	@Value("${updateSenderAddressInfo}")
 	private String updateSenderAddressInfo;
-
+	
+	@Value("${updateSenderText}")
+	private String updateSenderText;
+	
 	@Value("${updateBrandInfo}")
 	private String updateBrandInfo;
 	
@@ -62,14 +65,14 @@ public class PostcardOrderDaoImpl extends BaseDao implements PostcardOrderDao {
 				public PreparedStatement createPreparedStatement(Connection connection) throws SQLException {
 					PreparedStatement ps = connection.prepareStatement(createPostcardOrderQuery,
 							Statement.RETURN_GENERATED_KEYS);
-					ps.setString(1, Constants.DRAFT);
+					ps.setString(1, "DRAFT");
 					ps.setTimestamp(2, new java.sql.Timestamp(new Date().getTime()));
 					ps.setString(3, swissUtils.getUsername());
 					return ps;
 				}
 			}, holder);		
 		PostcardOrder postcardOrder = new PostcardOrder();
-		postcardOrder.setOrderStatus(Constants.DRAFT);;
+		postcardOrder.setOrderStatus("DRAFT");
 		postcardOrder.setOrderId(((BigInteger) holder.getKey()).intValue());
 		return postcardOrder;
 		}
@@ -121,7 +124,7 @@ public class PostcardOrderDaoImpl extends BaseDao implements PostcardOrderDao {
 	}
 
 	@Override
-	public String updateSenderAddress(UpdateSenderRequest request) {
+	public String updateSenderAddress(UpdateSenderAddressRequest request) {
 		KeyHolder holder = new GeneratedKeyHolder();
 		try {
 			getMainJdbcTemplate().update(new PreparedStatementCreator() {
@@ -130,10 +133,9 @@ public class PostcardOrderDaoImpl extends BaseDao implements PostcardOrderDao {
 					PreparedStatement ps = connection.prepareStatement(updateSenderAddressInfo,
 							Statement.RETURN_GENERATED_KEYS);
 					ps.setString(1, new Gson().toJson(request.getSenderAddress()));
-					ps.setString(2, request.getSenderText());
-					ps.setTimestamp(3, new java.sql.Timestamp(new Date().getTime()));
-					ps.setString(4, swissUtils.getUsername());
-					ps.setInt(5, request.getOrderId());
+					ps.setTimestamp(2, new java.sql.Timestamp(new Date().getTime()));
+					ps.setString(3, swissUtils.getUsername());
+					ps.setInt(4, request.getOrderId());
 					return ps;
 				}
 			}, holder);
@@ -141,7 +143,7 @@ public class PostcardOrderDaoImpl extends BaseDao implements PostcardOrderDao {
 			return e.getMessage();
 		}
 
-		return "Sender information updated successfully";
+		return "SenderAddress updated successfully";
 
 	}
 
@@ -168,6 +170,29 @@ public class PostcardOrderDaoImpl extends BaseDao implements PostcardOrderDao {
 
 		return "Brand information updated successfully";
 
+	}
+
+	@Override
+	public String updateSenderText(UpdateSenderTextRequest request) {
+		KeyHolder holder = new GeneratedKeyHolder();
+		try {
+			getMainJdbcTemplate().update(new PreparedStatementCreator() {
+				@Override
+				public PreparedStatement createPreparedStatement(Connection connection) throws SQLException {
+					PreparedStatement ps = connection.prepareStatement(updateSenderText,
+							Statement.RETURN_GENERATED_KEYS);
+					ps.setString(1, request.getSenderText());
+					ps.setTimestamp(2, new java.sql.Timestamp(new Date().getTime()));
+					ps.setString(3, swissUtils.getUsername());
+					ps.setInt(4, request.getOrderId());
+					return ps;
+				}
+			}, holder);
+		} catch (Exception e) {
+			return e.getMessage();
+		}
+
+		return "SenderText updated successfully";
 	}
 
 }

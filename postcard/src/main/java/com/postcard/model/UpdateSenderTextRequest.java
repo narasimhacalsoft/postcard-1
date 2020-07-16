@@ -3,9 +3,9 @@ package com.postcard.model;
 import lombok.Data;
 
 @Data
-public class UpdateSenderRequest {
-
+public class UpdateSenderTextRequest {
+	
 	private Integer orderId;
-	private SenderAddress senderAddress;
 	private String senderText;
+
 }

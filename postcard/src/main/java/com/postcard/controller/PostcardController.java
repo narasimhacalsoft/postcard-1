@@ -15,6 +15,7 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.oauth2.client.OAuth2RestTemplate;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -22,8 +23,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.google.gson.Gson;
-import com.postcard.model.Error;
-import com.postcard.model.PostcardRequest;
 import com.postcard.model.PreviewBackResponse;
 import com.postcard.model.PreviewFrontResponse;
 import com.postcard.model.RecipientAddress;
@@ -41,6 +40,7 @@ import io.swagger.annotations.Authorization;
 import lombok.extern.apachecommons.CommonsLog;
 
 @Controller
+@CrossOrigin
 @Api(tags = { "Postcard API" })
 @CommonsLog
 public class PostcardController {
@@ -259,6 +259,20 @@ public class PostcardController {
 		}
 
 	}
+	
+	@GetMapping(path = "getAllPostcardByStatus")
+	@ApiOperation(value = "Get all the Postcard and PostcardOrder Details by status", tags = {
+			"Postcard API" }, authorizations = { @Authorization(value = "jwtToken") })
+	@ApiResponses({ @ApiResponse(code = 200, message = "Get the PostCard and PostcardOrder details by status") })
+	public ResponseEntity<?> getAllPostcardsByStatus(@RequestParam(value = "status", required = true) String status) {
+		try {
+			return ResponseEntity.ok(postcardService.getAllPostcards(null,null,status));
+		} catch (Exception e) {
+			return ResponseEntity.badRequest().body(e.getMessage());
+		}
+
+	}
+
 
 	@PostMapping(path = "submitOrder")
 	@ApiOperation(value = "Submit the Postcard order", tags = { "Postcard API" }, authorizations = {

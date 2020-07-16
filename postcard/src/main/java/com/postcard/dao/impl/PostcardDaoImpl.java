@@ -36,7 +36,7 @@ import com.postcard.model.PostcardResponse;
 import com.postcard.model.SaveRecipientRequest;
 import com.postcard.model.SaveRecipientResponse;
 import com.postcard.model.UpdateBrandRequest;
-import com.postcard.model.UpdateSenderRequest;
+import com.postcard.model.UpdateSenderAddressRequest;
 import com.postcard.service.PostcardOrderService;
 import com.postcard.util.SwissUtils;
 
@@ -78,7 +78,10 @@ public class PostcardDaoImpl extends BaseDao implements PostcardDao {
 
 	@Value("${createPostcardEndPoint}")
 	String createPostcardEndPoint;
-
+	
+	@Value("${selectPostcardByStatus}")
+	String selectPostcardByStatus;
+	
 	@Autowired
 	SwissUtils swissUtils;
 	
@@ -198,7 +201,13 @@ public class PostcardDaoImpl extends BaseDao implements PostcardDao {
 
 	@Override
 	public List<PostcardOrder> findallPostcardOrder(String from,String to,String status) {
-		return query(selectGetallPostcards, from, to, status, new PostcardOrderMapper());
+		
+		if(StringUtils.isEmpty(from) || StringUtils.isEmpty(to)) {
+			return query(selectPostcardByStatus, status, new PostcardOrderMapper());
+		} else {
+			return query(selectGetallPostcards, from, to, status, new PostcardOrderMapper());
+		}
+		
 	}
 
 }

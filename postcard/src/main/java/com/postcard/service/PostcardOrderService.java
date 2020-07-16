@@ -4,7 +4,8 @@ import java.util.List;
 
 import com.postcard.model.PostcardOrder;
 import com.postcard.model.UpdateBrandRequest;
-import com.postcard.model.UpdateSenderRequest;
+import com.postcard.model.UpdateSenderAddressRequest;
+import com.postcard.model.UpdateSenderTextRequest;
 
 public interface PostcardOrderService {
     
@@ -18,9 +19,11 @@ public interface PostcardOrderService {
     
     void deletePostcardOrder(final PostcardOrder order);
     
-    String updateSenderAddress(UpdateSenderRequest request);
-    
     String updateBrandInfo(UpdateBrandRequest request);
+
+	String updateSenderText(UpdateSenderTextRequest request);
+	
+	String updateSenderAddress(UpdateSenderAddressRequest request);
 
 }
 
