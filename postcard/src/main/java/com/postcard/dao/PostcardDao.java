@@ -6,6 +6,7 @@ import com.postcard.exception.ServiceException;
 import com.postcard.model.GetAllPostcard;
 import com.postcard.model.Postcard;
 import com.postcard.model.PostcardOrder;
+import com.postcard.model.RecipientAddress;
 import com.postcard.model.SaveRecipientRequest;
 import com.postcard.model.SaveRecipientResponse;
 
@@ -25,7 +26,7 @@ public interface PostcardDao {
     
     void deletePostcard(final Postcard postcard);
     
-    SaveRecipientResponse saveRecipientAddress(SaveRecipientRequest request) throws ServiceException;
+    SaveRecipientResponse saveRecipientAddress(Integer orderId, RecipientAddress request) throws ServiceException;
     
     List<GetAllPostcard> getAllPostcards(String from,String to,String status);
     

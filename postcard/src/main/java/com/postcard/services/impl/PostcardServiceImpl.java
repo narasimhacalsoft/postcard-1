@@ -3,6 +3,7 @@ package com.postcard.services.impl;
 import java.io.File;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,6 +37,7 @@ import com.postcard.model.Postcard;
 import com.postcard.model.PostcardOrder;
 import com.postcard.model.PostcardRequest;
 import com.postcard.model.PostcardResponse;
+import com.postcard.model.RecipientAddress;
 import com.postcard.model.RecipientResponse;
 import com.postcard.model.SaveRecipientRequest;
 import com.postcard.model.SaveRecipientResponse;
@@ -113,32 +115,32 @@ public class PostcardServiceImpl implements PostcardService {
 
 
 	@Override
-	public SaveRecipientResponse saveRecipientAddress(SaveRecipientRequest request) throws ServiceException {
-			if (!CollectionUtils.isEmpty(request.getRecipient().getErrors())) {
+	public List<SaveRecipientResponse> saveRecipientAddress(SaveRecipientRequest requests) throws ServiceException {
+		List<SaveRecipientResponse> responses = new ArrayList<>();
+		
+		for (RecipientAddress request : requests.getRecipients()) {
+			if (!CollectionUtils.isEmpty(request.getErrors())) {
 				throw new ServiceException("Invalid Recipient Address");
-			
-		}
-			
-			SaveRecipientResponse response=postcardDao.saveRecipientAddress(request);
-			
+
+			}
+			SaveRecipientResponse response = postcardDao.saveRecipientAddress(requests.getOrderId(),request);
+
 			PostcardOrder order = postcardOrderDao.findOne(Long.valueOf(response.getOrderId()));
-			
+
 			PostcardRequest postRequest = new PostcardRequest();
-			postRequest.setRecipientAddress(request.getRecipient());
+			postRequest.setRecipientAddress(request);
 
 			if (!StringUtils.isEmpty(order.getSenderJson())) {
 				SenderAddress sendAddress = new Gson().fromJson(order.getSenderJson(), SenderAddress.class);
 				postRequest.setSenderAddress(sendAddress);
-				
-				
+
 			}
 
 			if (!StringUtils.isEmpty(order.getBrandingJson())) {
-				Branding brand =new Gson().fromJson(order.getBrandingJson(), Branding.class);
+				Branding brand = new Gson().fromJson(order.getBrandingJson(), Branding.class);
 				postRequest.setBranding(brand);
 			}
-			
-			
+
 			HttpHeaders headers = new HttpHeaders();
 			// Create post card
 			String url = postcardBaseURL + createPostcardEndPoint + campaignKey;
@@ -149,8 +151,11 @@ public class PostcardServiceImpl implements PostcardService {
 			// update postcard order wiht card key
 			response.getPostcard().setCardKey(responseEntity.getBody().getCardKey());
 			postcardDao.updatePostcardkey(response.getPostcard());
+			responses.add(response);
+		}
+			
 		 
-		return response;
+		return responses;
 	}
 
 	@Override

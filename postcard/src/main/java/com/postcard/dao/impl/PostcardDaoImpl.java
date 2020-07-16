@@ -10,10 +10,6 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
 import org.springframework.jdbc.core.PreparedStatementCreator;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
@@ -31,12 +27,8 @@ import com.postcard.model.Postcard;
 import com.postcard.model.PostcardMapper;
 import com.postcard.model.PostcardOrder;
 import com.postcard.model.PostcardOrderMapper;
-import com.postcard.model.PostcardRequest;
-import com.postcard.model.PostcardResponse;
-import com.postcard.model.SaveRecipientRequest;
+import com.postcard.model.RecipientAddress;
 import com.postcard.model.SaveRecipientResponse;
-import com.postcard.model.UpdateBrandRequest;
-import com.postcard.model.UpdateSenderAddressRequest;
 import com.postcard.service.PostcardOrderService;
 import com.postcard.util.SwissUtils;
 
@@ -151,7 +143,8 @@ public class PostcardDaoImpl extends BaseDao implements PostcardDao {
 	}
 
 	@Override
-	public SaveRecipientResponse saveRecipientAddress(SaveRecipientRequest request) throws ServiceException {
+	public SaveRecipientResponse saveRecipientAddress(Integer orderId, RecipientAddress request) throws ServiceException {
+	
 		Postcard postcard = new Postcard();
 		KeyHolder holder = new GeneratedKeyHolder();
 		getMainJdbcTemplate().update(new PreparedStatementCreator() {
@@ -160,8 +153,8 @@ public class PostcardDaoImpl extends BaseDao implements PostcardDao {
 			public PreparedStatement createPreparedStatement(Connection connection) throws SQLException {
 				PreparedStatement ps = connection.prepareStatement(createPostcardForRecipientAddressQuery,
 						Statement.RETURN_GENERATED_KEYS);
-				ps.setInt(1, request.getOrderId());
-				ps.setString(2, new Gson().toJson(request.getRecipient()));
+				ps.setInt(1, orderId);
+				ps.setString(2, new Gson().toJson(request));
 				ps.setString(3, "DRAFT");
 				ps.setTimestamp(4, new java.sql.Timestamp(new Date().getTime()));
 				ps.setString(5, swissUtils.getUsername());
@@ -171,7 +164,7 @@ public class PostcardDaoImpl extends BaseDao implements PostcardDao {
 
 		int cardId = holder.getKey().intValue();
 		postcard.setCardId(cardId);
-		SaveRecipientResponse response = new SaveRecipientResponse(request.getOrderId(), postcard);
+		SaveRecipientResponse response = new SaveRecipientResponse(orderId, postcard);
 		return response;
 	}
 

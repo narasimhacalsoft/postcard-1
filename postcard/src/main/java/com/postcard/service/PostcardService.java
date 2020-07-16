@@ -14,7 +14,7 @@ import com.postcard.model.SaveRecipientResponse;
 
 public interface PostcardService {
     
-    SaveRecipientResponse saveRecipientAddress(SaveRecipientRequest request) throws ServiceException;    
+    List<SaveRecipientResponse> saveRecipientAddress(SaveRecipientRequest request) throws ServiceException;    
 
     List<GetAllPostcard> getAllPostcards(String from,String to,String status);
 
