@@ -5,6 +5,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.Date;
 import java.util.List;
 
 import javax.sql.rowset.serial.SerialBlob;
@@ -22,6 +23,7 @@ import com.postcard.dao.ImageDao;
 import com.postcard.dao.PostcardOrderDao;
 import com.postcard.model.Image;
 import com.postcard.model.PostcardOrder;
+import com.postcard.util.SwissUtils;
 
 @Repository
 public class ImageDaoImpl extends BaseDao implements ImageDao {
@@ -40,6 +42,12 @@ public class ImageDaoImpl extends BaseDao implements ImageDao {
     
     @Autowired
     PostcardOrderDao postcardOrderDao;
+    
+    @Value("${updatePostcardOrderWithImageQuery}")
+	private String updatePostcardOrderWithImageQuery;
+    
+    @Autowired 
+    SwissUtils swissUtils;
 
     @Override
 	public String createImage(MultipartFile file, long orderId, String imageType) {
@@ -101,6 +109,25 @@ public class ImageDaoImpl extends BaseDao implements ImageDao {
 	public Image findOne(Long imageId) {
 		Image image =  queryForObject(findOneImageQuery, Image.class,imageId);
         return image;
+	}
+
+	@Override
+	public String updateOrderidWiseImageid(long orderId, Long imageId) {
+		KeyHolder holder = new GeneratedKeyHolder();
+		getMainJdbcTemplate().update(new PreparedStatementCreator() {
+
+			@Override
+			public PreparedStatement createPreparedStatement(Connection connection) throws SQLException {
+				PreparedStatement ps = connection.prepareStatement(updatePostcardOrderWithImageQuery,
+						Statement.RETURN_GENERATED_KEYS);
+				ps.setLong(1, imageId);
+				ps.setTimestamp(2, new java.sql.Timestamp(new Date().getTime()));
+				ps.setString(3, swissUtils.getUsername());
+				ps.setLong(4, orderId);
+				return ps;
+			}
+		}, holder);		
+	return "Imageid updated successfully";
 	}
 
 }

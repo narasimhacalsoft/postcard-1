@@ -95,8 +95,8 @@ INSERT INTO `postcard`.`PROPERTIES` (`name`,`value`) VALUES ('findOnePostcardOrd
 INSERT INTO `postcard`.`PROPERTIES` (`name`,`value`) VALUES ('findallPostcardOrderQuery','select * from postcardorder');
 INSERT INTO `postcard`.`PROPERTIES` (`name`,`value`) VALUES ('deletePostcardOrderQuery','delete from postcardorder where orderId = ?');
 INSERT INTO `postcard`.`PROPERTIES` (`name`,`value`) VALUES ('findallPostcardQuery','select * from postcard');
-INSERT INTO `postcard`.`PROPERTIES` (`name`,`value`) VALUES ('deletePostcardQuery','delete from Postcard where cardId = ?');
-INSERT INTO `postcard`.`PROPERTIES` (`name`,`value`) VALUES ('findOnePostcardQuery','SELECT * FROM Postcard WHERE cardKey = ?');
+INSERT INTO `postcard`.`PROPERTIES` (`name`,`value`) VALUES ('deletePostcardQuery','delete from postcard where cardId = ?');
+INSERT INTO `postcard`.`PROPERTIES` (`name`,`value`) VALUES ('findOnePostcardQuery','SELECT * FROM postcard WHERE cardKey = ?');
 INSERT INTO `postcard`.`PROPERTIES` (`name`,`value`) VALUES ('createImageQuery','insert into image(imageType) values (?)');
 INSERT INTO `postcard`.`PROPERTIES` (`name`,`value`) VALUES ('findOneImageQuery','SELECT * FROM image WHERE imageId = ?');
 INSERT INTO `postcard`.`PROPERTIES` (`name`,`value`) VALUES ('findallImageQuery','select * from image');
@@ -105,7 +105,7 @@ INSERT INTO `postcard`.`PROPERTIES` (`name`,`value`) VALUES ('management.endpoin
 INSERT INTO `postcard`.`PROPERTIES` (`name`,`value`) VALUES ('management.endpoint.health','true');
 INSERT INTO `postcard`.`PROPERTIES` (`name`,`value`) VALUES ('management.endpoint.info','true');
 INSERT INTO `postcard`.`PROPERTIES` (`name`,`value`) VALUES ('management.endpoint.restart.enabled','true');
-INSERT INTO `postcard`.`PROPERTIES` (`name`,`value`) VALUES ('findallPostcardByOrderidQuery','SELECT * FROM Postcard WHERE orderId = ?');
+INSERT INTO `postcard`.`PROPERTIES` (`name`,`value`) VALUES ('findallPostcardByOrderidQuery','SELECT * FROM postcard WHERE orderId = ?');
 
 INSERT INTO `postcard`.`PROPERTIES` (`name`,`value`) VALUES ('createPostcardOrderQuery','insert into postcardorder(orderStatus,createdDate,createdBy) values (?,?,?)');
 INSERT INTO `postcard`.`PROPERTIES` (`name`,`value`) VALUES ('updatePostcardOrderQuery','update postcardorder set senderText =? ,senderJson=? ,brandingText=?,brandingJson=?, imageId=?,updatedDate=?,updatedBy=? where orderId = ?');
@@ -131,4 +131,4 @@ INSERT INTO `postcard`.`PROPERTIES` (`name`,`value`) VALUES ('updateSenderAddres
 
 
 
-
+INSERT INTO `postcard`.`PROPERTIES` (`name`,`value`) VALUES ('updatePostcardOrderWithImageQuery','update postcardorder set imageId=?,updatedDate=?,updatedBy=? where orderId = ?');

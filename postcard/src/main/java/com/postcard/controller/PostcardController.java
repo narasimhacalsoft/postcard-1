@@ -251,9 +251,9 @@ public class PostcardController {
 	@ApiOperation(value = "Get all the Postcard and PostcardOrder Details", tags = {
 			"Postcard API" }, authorizations = { @Authorization(value = "jwtToken") })
 	@ApiResponses({ @ApiResponse(code = 200, message = "Get the PostCard and PostcardOrder details") })
-	public ResponseEntity<?> getAllPostcards(@RequestParam(value = "from", required = true) String from,@RequestParam(value = "to", required = true) String to,@RequestParam(value = "status", required = true) String status) {
+	public ResponseEntity<?> getAllPostcards(@RequestParam(value = "from", required = true) String from,@RequestParam(value = "to", required = true) String to) {
 		try {
-			return ResponseEntity.ok(postcardService.getAllPostcards(from,to,status));
+			return ResponseEntity.ok(postcardService.getAllPostcards(from,to,null));
 		} catch (Exception e) {
 			return ResponseEntity.badRequest().body(e.getMessage());
 		}

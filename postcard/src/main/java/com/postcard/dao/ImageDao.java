@@ -16,4 +16,6 @@ public interface ImageDao {
     
     void deleteImage(final Image image);
 
+	String updateOrderidWiseImageid(long orderId, Long imageId);
+
 }

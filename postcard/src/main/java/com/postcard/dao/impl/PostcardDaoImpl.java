@@ -205,7 +205,7 @@ public class PostcardDaoImpl extends BaseDao implements PostcardDao {
 		if(StringUtils.isEmpty(from) || StringUtils.isEmpty(to)) {
 			return query(selectPostcardByStatus, status, new PostcardOrderMapper());
 		} else {
-			return query(selectGetallPostcards, from, to, status, new PostcardOrderMapper());
+			return query(selectGetallPostcards, from, to, "SUBMITTED", new PostcardOrderMapper());
 		}
 		
 	}

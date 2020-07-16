@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -22,6 +23,7 @@ import io.swagger.annotations.ApiResponses;
 import io.swagger.annotations.Authorization;
 
 @Controller
+@CrossOrigin
 @Api(tags = { "Image API" })
 public class ImageController {
 
@@ -87,6 +89,20 @@ public class ImageController {
 			image.setImage(file.getBytes());
 			String imageId = imageService.createImage(file,orderId, imageType);
 			return ResponseEntity.ok(imageId);
+		} catch (Exception e) {
+			System.out.println(e);
+			return ResponseEntity.badRequest().body(e.getMessage());
+		}
+	}
+	
+	@PostMapping(path = "updateOrderidWiseImageid", produces = MediaType.APPLICATION_JSON_VALUE)
+	@ApiOperation(value = "Uploads stamp for the postcard", tags = {
+			"Image API" }, authorizations = { @Authorization(value="jwtToken") })
+	@ApiResponses({ @ApiResponse(code = 200, message = "Image Uploaded") })
+	public ResponseEntity<?> updateOrderidWiseImageid(@RequestParam("orderId") long orderId, @RequestParam("imageId") long imageId) {
+		try {
+			String status = imageService.updateOrderidWiseImageid(orderId, imageId);
+			return ResponseEntity.ok(status);
 		} catch (Exception e) {
 			System.out.println(e);
 			return ResponseEntity.badRequest().body(e.getMessage());

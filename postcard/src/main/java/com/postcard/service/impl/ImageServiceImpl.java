@@ -41,4 +41,9 @@ public class ImageServiceImpl implements ImageService{
 		imageDao.deleteImage(image); 
 	}
 
+	@Override
+	public String updateOrderidWiseImageid(long orderId, Long imageId) {
+		return imageDao.updateOrderidWiseImageid(orderId,imageId);
+	}
+
 }

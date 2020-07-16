@@ -1,6 +1,5 @@
 package com.postcard.service;
 
-import java.io.InputStreamReader;
 import java.util.List;
 
 import org.springframework.web.multipart.MultipartFile;
@@ -16,5 +15,7 @@ public interface ImageService {
     Image findOne(Long imageId);
     
     void deleteImage(final Image image);
+
+	String updateOrderidWiseImageid(long orderId, Long imageId);
 
 }
