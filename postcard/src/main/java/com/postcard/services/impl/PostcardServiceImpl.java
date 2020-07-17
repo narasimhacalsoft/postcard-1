@@ -30,10 +30,11 @@ import com.postcard.model.Branding;
 import com.postcard.model.BrandingImageResponse;
 import com.postcard.model.BrandingStampResponse;
 import com.postcard.model.BrandingTextResponse;
-import com.postcard.model.GetAllPostcard;
+import com.postcard.model.OrderResponse;
 import com.postcard.model.Image;
 import com.postcard.model.ImageResponse;
 import com.postcard.model.Postcard;
+import com.postcard.model.PostcardCarouselResponse;
 import com.postcard.model.PostcardOrder;
 import com.postcard.model.PostcardRequest;
 import com.postcard.model.PostcardResponse;
@@ -188,8 +189,8 @@ public class PostcardServiceImpl implements PostcardService {
 	}
 
 	@Override
-	public List<GetAllPostcard> getAllPostcards(String from,String to,String status) {
-		return postcardDao.getAllPostcards(from,to,status);
+	public OrderResponse getAllPostcards(String from,String to) {
+		return postcardDao.getAllPostcards(from,to);
 	}
 
 	@Override
@@ -357,6 +358,11 @@ public class PostcardServiceImpl implements PostcardService {
 			System.out.println(e);
 			return ResponseEntity.badRequest().body(e.getMessage());
 		}
+	}
+
+	@Override
+	public List<PostcardCarouselResponse> getAllPostcardsByStatus() {
+		return postcardDao.getAllPostcardsByStatus();
 	}
 
 }

@@ -6,6 +6,7 @@ import com.postcard.model.PostcardOrder;
 import com.postcard.model.UpdateBrandRequest;
 import com.postcard.model.UpdateSenderAddressRequest;
 import com.postcard.model.UpdateSenderTextRequest;
+import com.postcard.model.UpdateStatusResponse;
 
 public interface PostcardOrderService {
     
@@ -19,11 +20,11 @@ public interface PostcardOrderService {
     
     void deletePostcardOrder(final PostcardOrder order);
     
-    String updateBrandInfo(UpdateBrandRequest request);
+    UpdateStatusResponse updateBrandInfo(UpdateBrandRequest request);
 
-	String updateSenderText(UpdateSenderTextRequest request);
+    UpdateStatusResponse updateSenderText(UpdateSenderTextRequest request);
 	
-	String updateSenderAddress(UpdateSenderAddressRequest request);
+    UpdateStatusResponse updateSenderAddress(UpdateSenderAddressRequest request);
 
 }
 

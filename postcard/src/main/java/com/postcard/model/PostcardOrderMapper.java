@@ -11,6 +11,7 @@ public class PostcardOrderMapper implements RowMapper<PostcardOrder> {
 	public PostcardOrder mapRow(ResultSet rs, int rowNum) throws SQLException {
 		PostcardOrder postcardOrder = new PostcardOrder();
 		postcardOrder.setOrderId(rs.getInt("orderId"));
+		postcardOrder.setImageId(rs.getInt("imageId"));
 		postcardOrder.setSenderText(rs.getString("senderText"));
 		postcardOrder.setSenderJson(rs.getString("senderJson"));
 		postcardOrder.setBrandingText(rs.getString("brandingText"));
@@ -19,7 +20,7 @@ public class PostcardOrderMapper implements RowMapper<PostcardOrder> {
 		postcardOrder.setCreatedBy(rs.getString("createdBy"));
 		postcardOrder.setUpdatedDate(rs.getTimestamp("updatedDate"));
 		postcardOrder.setUpdatedBy(rs.getString("updatedBy"));
-		postcardOrder.setUpdatedBy(rs.getString("orderStatus"));
+		postcardOrder.setOrderStatus(rs.getString("orderStatus"));
 		return postcardOrder;
 	}
 

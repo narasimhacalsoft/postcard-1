@@ -22,13 +22,17 @@ import com.google.gson.Gson;
 import com.postcard.dao.BaseDao;
 import com.postcard.dao.PostcardDao;
 import com.postcard.exception.ServiceException;
-import com.postcard.model.GetAllPostcard;
+import com.postcard.model.OrderResponse;
+import com.postcard.model.Order;
 import com.postcard.model.Postcard;
+import com.postcard.model.PostcardCarouselResponse;
 import com.postcard.model.PostcardMapper;
 import com.postcard.model.PostcardOrder;
 import com.postcard.model.PostcardOrderMapper;
 import com.postcard.model.RecipientAddress;
+import com.postcard.model.PostcardDetails;
 import com.postcard.model.SaveRecipientResponse;
+import com.postcard.model.SenderAddress;
 import com.postcard.service.PostcardOrderService;
 import com.postcard.util.SwissUtils;
 
@@ -169,22 +173,46 @@ public class PostcardDaoImpl extends BaseDao implements PostcardDao {
 	}
 
 	@Override
-	public List<GetAllPostcard> getAllPostcards(String from,String to,String status) {
-		List<GetAllPostcard> allPostcards = new ArrayList<>();
-		List<PostcardOrder> postcardOrders = findallPostcardOrder(from,to,status);
+	public OrderResponse getAllPostcards(String from, String to) {
+		OrderResponse finalResponse = new OrderResponse();
+		List<PostcardDetails> allPostcards = new ArrayList<>();
+		List<Order> allPostcard = new ArrayList<>();
+		List<PostcardOrder> postcardOrders = findallPostcardOrder(from, to);
 		for (PostcardOrder postcardOrder : postcardOrders) {
-			GetAllPostcard postcard = new GetAllPostcard();
+			Order getPostcard = new Order();
 			List<Postcard> listPostcard = findPostcardByOrderId(Long.valueOf(postcardOrder.getOrderId()));
 			if (!CollectionUtils.isEmpty(listPostcard)) {
-				postcard.setOrderId(postcardOrder.getOrderId());
-				postcard.setPostcards(findPostcardByOrderId(Long.valueOf(postcardOrder.getOrderId())));
-				postcard.setPostcardOrder(postcardOrder);
-				allPostcards.add(postcard);
-			}
+				getPostcard.setOrderId(postcardOrder.getOrderId());
+				getPostcard.setNoOfRecipients(listPostcard.size());
+				getPostcard.setPrintQty(listPostcard.size());
+				getPostcard.setCreatedDate(swissUtils.convertCreateDateWithHours(postcardOrder.getCreatedDate()));
+				if (!StringUtils.isEmpty(postcardOrder.getSenderJson())) {
+					getPostcard
+							.setSenderAddress(new Gson().fromJson(postcardOrder.getSenderJson(), SenderAddress.class));
+				}
+				getPostcard.setStatus(postcardOrder.getOrderStatus());
+				for (Postcard postcard : listPostcard) {
+					PostcardDetails rResponse = new PostcardDetails();
+					rResponse.setCardKey(postcard.getCardKey());
+					if (postcard.getCreatedDate() != null) {
+						rResponse.setCreatedDate(swissUtils.convertCreateDateWithHours(postcard.getCreatedDate()));
+					}
+					if (!StringUtils.isEmpty(postcard.getRecipientJson())) {
+						RecipientAddress address = new Gson().fromJson(postcard.getRecipientJson(),
+								RecipientAddress.class);
+						//if(StringUtils.isEmpty(address.getFirstname()) && StringUtils.isEmpty(address.getLastname()))
+						rResponse.setName(address.getFirstname() + " " + address.getLastname());
+					}
 
+					allPostcards.add(rResponse);
+				}
+				getPostcard.setRecipients(allPostcards);
+			}
+			allPostcard.add(getPostcard);
 		}
 
-		return allPostcards;
+		finalResponse.setOrders(allPostcard);
+		return finalResponse;
 	}
 
 	@Override
@@ -193,14 +221,31 @@ public class PostcardDaoImpl extends BaseDao implements PostcardDao {
 	}
 
 	@Override
-	public List<PostcardOrder> findallPostcardOrder(String from,String to,String status) {
-		
-		if(StringUtils.isEmpty(from) || StringUtils.isEmpty(to)) {
-			return query(selectPostcardByStatus, status, new PostcardOrderMapper());
-		} else {
-			return query(selectGetallPostcards, from, to, "SUBMITTED", new PostcardOrderMapper());
+	public List<PostcardOrder> findallPostcardOrder(String from,String to) {
+		String status ="SUBMITTED";
+			return query(selectGetallPostcards, from, to, status, new PostcardOrderMapper());
 		}
 		
+
+	@Override
+	public List<PostcardCarouselResponse> getAllPostcardsByStatus() {
+		List<PostcardCarouselResponse> allPostcards = new ArrayList<>();
+		List<PostcardOrder> postcardOrders = query(selectPostcardByStatus, "DRAFT", new PostcardOrderMapper());
+		for (PostcardOrder postcardOrder : postcardOrders) {
+			List<Postcard> listPostcard = findPostcardByOrderId(Long.valueOf(postcardOrder.getOrderId()));
+			if (!CollectionUtils.isEmpty(listPostcard)) {
+					PostcardCarouselResponse postResponse = new PostcardCarouselResponse();
+					postResponse.setImageId(postcardOrder.getImageId());
+					postResponse.setOrderId(postcardOrder.getOrderId());
+					postResponse.setOrderStatus(postcardOrder.getOrderStatus());
+					postResponse.setNumberOfRecipients(String.valueOf(listPostcard.size()));
+					postResponse.setCreatedDate(swissUtils.convertCreateDate(postcardOrder.getCreatedDate()));
+					allPostcards.add(postResponse);
+				
+				
+			}
+		}
+		return allPostcards;
 	}
 
 }

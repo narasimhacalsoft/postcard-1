@@ -194,7 +194,7 @@ public class PostcardController {
 		}
 	}
 
-	@PostMapping(path = "createRecipinet")
+	@PostMapping(path = "createRecipinets")
 	@ApiOperation(value = "Save Receipient Address Details", tags = { "Postcard API" }, authorizations = {
 			@Authorization(value = "jwtToken") })
 	@ApiResponses({ @ApiResponse(code = 200, message = "Recipient details saved Successfully") })
@@ -253,7 +253,7 @@ public class PostcardController {
 	@ApiResponses({ @ApiResponse(code = 200, message = "Get the PostCard and PostcardOrder details") })
 	public ResponseEntity<?> getAllPostcards(@RequestParam(value = "from", required = true) String from,@RequestParam(value = "to", required = true) String to) {
 		try {
-			return ResponseEntity.ok(postcardService.getAllPostcards(from,to,null));
+			return ResponseEntity.ok(postcardService.getAllPostcards(from,to));
 		} catch (Exception e) {
 			return ResponseEntity.badRequest().body(e.getMessage());
 		}
@@ -264,9 +264,9 @@ public class PostcardController {
 	@ApiOperation(value = "Get all the Postcard and PostcardOrder Details by status", tags = {
 			"Postcard API" }, authorizations = { @Authorization(value = "jwtToken") })
 	@ApiResponses({ @ApiResponse(code = 200, message = "Get the PostCard and PostcardOrder details by status") })
-	public ResponseEntity<?> getAllPostcardsByStatus(@RequestParam(value = "status", required = true) String status) {
+	public ResponseEntity<?> getAllPostcardsByStatus() {
 		try {
-			return ResponseEntity.ok(postcardService.getAllPostcards(null,null,status));
+			return ResponseEntity.ok(postcardService.getAllPostcardsByStatus());
 		} catch (Exception e) {
 			return ResponseEntity.badRequest().body(e.getMessage());
 		}

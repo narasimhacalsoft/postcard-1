@@ -3,11 +3,11 @@ package com.postcard.dao;
 import java.util.List;
 
 import com.postcard.exception.ServiceException;
-import com.postcard.model.GetAllPostcard;
+import com.postcard.model.OrderResponse;
 import com.postcard.model.Postcard;
+import com.postcard.model.PostcardCarouselResponse;
 import com.postcard.model.PostcardOrder;
 import com.postcard.model.RecipientAddress;
-import com.postcard.model.SaveRecipientRequest;
 import com.postcard.model.SaveRecipientResponse;
 
 public interface PostcardDao {
@@ -28,11 +28,13 @@ public interface PostcardDao {
     
     SaveRecipientResponse saveRecipientAddress(Integer orderId, RecipientAddress request) throws ServiceException;
     
-    List<GetAllPostcard> getAllPostcards(String from,String to,String status);
-    
     List<Postcard> findPostcardByOrderId(Long orderId);
-    
-	List<PostcardOrder> findallPostcardOrder(String from,String to,String status);
+
+	List<PostcardCarouselResponse> getAllPostcardsByStatus();
+
+	List<PostcardOrder> findallPostcardOrder(String from, String to);
+
+	OrderResponse getAllPostcards(String from, String to);
     
 
 }

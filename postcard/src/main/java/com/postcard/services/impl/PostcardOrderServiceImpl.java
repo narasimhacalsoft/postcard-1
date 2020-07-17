@@ -10,6 +10,7 @@ import com.postcard.model.PostcardOrder;
 import com.postcard.model.UpdateBrandRequest;
 import com.postcard.model.UpdateSenderAddressRequest;
 import com.postcard.model.UpdateSenderTextRequest;
+import com.postcard.model.UpdateStatusResponse;
 import com.postcard.service.PostcardOrderService;
 
 @Service
@@ -50,19 +51,30 @@ public class PostcardOrderServiceImpl implements PostcardOrderService{
     }
     
     @Override
-	public String updateSenderAddress(UpdateSenderAddressRequest request) {
-		return postcardOrderDao.updateSenderAddress(request);
-		
+	public UpdateStatusResponse updateSenderAddress(UpdateSenderAddressRequest request) {
+    	String status = "";
+		if(postcardOrderDao.updateSenderAddress(request)) {
+			status = "SenderAddress updated successfully.";
+		}
+		return new UpdateStatusResponse(status);
 	}
 
 	@Override
-	public String updateBrandInfo(UpdateBrandRequest request) {
-		return postcardOrderDao.updateBrandInfo(request);
+	public UpdateStatusResponse updateBrandInfo(UpdateBrandRequest request) {
+		String status = "";
+		if(postcardOrderDao.updateBrandInfo(request)) {
+			status = "Brandinfo updated successfully.";
+		}
+		return new UpdateStatusResponse(status);
 	}
 
 	@Override
-	public String updateSenderText(UpdateSenderTextRequest request) {
-		return postcardOrderDao.updateSenderText(request);
+	public UpdateStatusResponse updateSenderText(UpdateSenderTextRequest request) {
+		String status = "";
+		if(postcardOrderDao.updateSenderText(request)) {
+			status = "SenderText updated successfully.";
+		}
+		return new UpdateStatusResponse(status);
 	}
 
 

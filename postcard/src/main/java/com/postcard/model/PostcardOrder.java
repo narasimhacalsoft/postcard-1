@@ -1,6 +1,7 @@
 package com.postcard.model;
 
 import java.sql.Timestamp;
+import java.util.List;
 
 import lombok.Data;
 
@@ -17,5 +18,8 @@ public class PostcardOrder {
     private Timestamp updatedDate;
     private String updatedBy;
     private String orderStatus;
+    
+    private List<Postcard> postcards;
+  
     
 }

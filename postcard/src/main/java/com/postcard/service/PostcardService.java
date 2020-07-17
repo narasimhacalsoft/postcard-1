@@ -6,8 +6,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.oauth2.client.OAuth2RestTemplate;
 
 import com.postcard.exception.ServiceException;
-import com.postcard.model.GetAllPostcard;
+import com.postcard.model.OrderResponse;
 import com.postcard.model.Postcard;
+import com.postcard.model.PostcardCarouselResponse;
 import com.postcard.model.PostcardOrder;
 import com.postcard.model.SaveRecipientRequest;
 import com.postcard.model.SaveRecipientResponse;
@@ -16,7 +17,7 @@ public interface PostcardService {
     
     List<SaveRecipientResponse> saveRecipientAddress(SaveRecipientRequest request) throws ServiceException;    
 
-    List<GetAllPostcard> getAllPostcards(String from,String to,String status);
+    OrderResponse getAllPostcards(String from,String to);
 
     PostcardOrder submitOrder(OAuth2RestTemplate postCardRestTemplate, long orderId, String cardKey ) throws ServiceException;
     
@@ -37,6 +38,8 @@ public interface PostcardService {
     ResponseEntity<?> approvePostcard(OAuth2RestTemplate postCardRestTemplate, Postcard postcard);
     
     ResponseEntity<?> getPostcardState(OAuth2RestTemplate postCardRestTemplate, Postcard postcard);
+
+    List<PostcardCarouselResponse> getAllPostcardsByStatus();
     
 
 }

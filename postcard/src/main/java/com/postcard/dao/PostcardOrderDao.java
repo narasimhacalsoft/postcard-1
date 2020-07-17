@@ -19,11 +19,11 @@ public interface PostcardOrderDao {
     
     void deletePostcardOrder(final PostcardOrder order);
     
-    String updateSenderAddress(UpdateSenderAddressRequest request);
+    boolean updateSenderAddress(UpdateSenderAddressRequest request);
     
-    String updateBrandInfo(UpdateBrandRequest request);
+    boolean updateBrandInfo(UpdateBrandRequest request);
     
-    String updateSenderText(UpdateSenderTextRequest request);
+    boolean updateSenderText(UpdateSenderTextRequest request);
     
     
   
